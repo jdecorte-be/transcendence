@@ -1,3 +1,0 @@
-[variables]
-# Pin Node to a supported LTS to avoid Node 18 EOL failures.
-NIXPACKS_NODE_VERSION = "20"
