@@ -1,0 +1,12 @@
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+@Injectable()
+export class GithubOauthGuard extends AuthGuard('github') {
+  canActivate(context: ExecutionContext) {
+    const req = context.switchToHttp().getRequest();
+    const res = context.switchToHttp().getResponse();
+    req.res = res;
+    return super.canActivate(context);
+  }
+}

@@ -1,0 +1,173 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table users {
+  userId String [pk]
+  updatedAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  email String [unique]
+  password String
+  refreshedHash String
+  intraId String [unique]
+  profileFinished Boolean [not null, default: false]
+  online Boolean [not null, default: false]
+  Username String [unique]
+  firstName String
+  lastName String
+  discreption String [not null, default: '']
+  avatar String
+  tfaEnabled Boolean [not null, default: false]
+  tfaSecret String
+  tfaToken String [unique]
+  left_friends friends [not null]
+  right_friends friends [not null]
+  participant1 matches [not null]
+  participant2 matches [not null]
+  owned_rooms rooms [not null]
+  roomMember room_members [not null]
+  blocked_by blocked_friends [not null]
+  blocked blocked_friends [not null]
+  Message messages [not null]
+  actor notifications [not null]
+  receiver notifications [not null]
+}
+
+Table friends {
+  updatedAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  id String [pk]
+  fromId String [not null]
+  toId String [not null]
+  accepted Boolean [not null, default: false]
+  from users [not null]
+  to users [not null]
+
+  indexes {
+    (fromId, toId) [unique]
+  }
+}
+
+Table blocked_friends {
+  updatedAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  id String [pk]
+  Blcoked_by users [not null]
+  blocked_by_id String [not null]
+  Blocked users [not null]
+  blocked_id String [not null]
+  dmRoomId String
+
+  indexes {
+    (blocked_by_id, blocked_id) [unique]
+  }
+}
+
+Table matches {
+  updatedAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  id Int [pk, increment]
+  participant1Id String [not null]
+  participant2Id String [not null]
+  winner_id String
+  score1 Int
+  score2 Int
+  gametype String
+  participant1 users [not null]
+  participant2 users [not null]
+}
+
+Table messages {
+  updatedAt DateTime [not null]
+  createdAt DateTime [default: `now()`, unique, not null]
+  id String [pk]
+  authorId String [not null]
+  room rooms [not null]
+  author users [not null]
+  roomId String [not null]
+  content String
+}
+
+Table rooms {
+  updatedAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  id String [pk]
+  name String
+  ownerId String [not null]
+  type RoomType [not null, default: 'public']
+  password String
+  owner users [not null]
+  members room_members [not null]
+  messages messages [not null]
+}
+
+Table room_members {
+  updatedAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  id String [pk]
+  userId String [not null]
+  roomId String [not null]
+  is_admin Boolean [not null, default: false]
+  is_banned Boolean [not null, default: false]
+  bannedAt DateTime
+  is_mueted Boolean [not null, default: false]
+  mute_expires DateTime
+  user users [not null]
+  room rooms [not null]
+
+  indexes {
+    (userId, roomId) [unique]
+  }
+}
+
+Table notifications {
+  createdAt DateTime [default: `now()`, unique, not null]
+  id String [pk]
+  actorId String [not null]
+  receiverId String [not null]
+  type NotifType [not null]
+  entityId String
+  entity_type String
+  is_read Boolean [not null, default: false]
+  actor users [not null]
+  receiver users [not null]
+}
+
+Enum NotifType {
+  addFriend
+  acceptFriend
+  message
+}
+
+Enum RoomType {
+  public
+  private
+  protected
+  dm
+}
+
+Ref: friends.fromId > users.userId [delete: Cascade]
+
+Ref: friends.toId > users.userId [delete: Cascade]
+
+Ref: blocked_friends.blocked_by_id > users.userId [delete: Cascade]
+
+Ref: blocked_friends.blocked_id > users.userId [delete: Cascade]
+
+Ref: matches.participant1Id > users.userId [delete: Cascade]
+
+Ref: matches.participant2Id > users.userId [delete: Cascade]
+
+Ref: messages.roomId > rooms.id [delete: Cascade]
+
+Ref: messages.authorId > users.userId [delete: Cascade]
+
+Ref: rooms.ownerId > users.userId [delete: Cascade]
+
+Ref: room_members.userId > users.userId [delete: Cascade]
+
+Ref: room_members.roomId > rooms.id [delete: Cascade]
+
+Ref: notifications.actorId > users.userId [delete: Cascade]
+
+Ref: notifications.receiverId > users.userId [delete: Cascade]
