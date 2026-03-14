@@ -1,9 +1,23 @@
-FROM node:20
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
-COPY ./code .
+COPY ./code/package*.json ./
 
-RUN npm install && npm run build
+RUN npm ci
 
-CMD sleep 5
+COPY ./code ./
+
+RUN npm run build
+
+FROM alpine:3.19
+
+WORKDIR /app
+
+RUN addgroup -S app && adduser -S app -G app
+
+COPY --from=build /app/build ./build
+
+USER app
+
+CMD ["sh", "-c", "sleep infinity"]

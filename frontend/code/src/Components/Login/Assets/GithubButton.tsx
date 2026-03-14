@@ -1,6 +1,6 @@
 export const GithubButton = () => {
   return (
-    <div className="flex items-center justify-center gap-3 rounded-xl bg-neutral text-white px-8 py-4 hover:bg-neutral/80 transition duration-300">
+    <div className="flex items-center justify-center gap-3 w-[330px] h-[81px] rounded-[13px] bg-[#8C67F6] text-white transition duration-500 hover:-translate-y-1 hover:scale-[1.02] hover:bg-[#7a55f0]">
       <svg
         aria-hidden="true"
         viewBox="0 0 16 16"

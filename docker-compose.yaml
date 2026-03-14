@@ -42,7 +42,7 @@ services :
     depends_on:
       - backend
     ports:
-      - 8000:80
+      - 8000:8080
     init: true
     restart: always
 

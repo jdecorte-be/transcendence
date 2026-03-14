@@ -48,9 +48,9 @@ export const Setting = () => {
         <h1 className="font-poppins font-medium text-xl text-neutral">
           Profile Settings
         </h1>
-        <div className="flex flex-col bg-base-200 rounded-tl-2xl">
+        <div className="flex flex-col bg-base-200 rounded-2xl">
           <div className="flex justify-center h-1/3 w-full pt-6 px-6">
-            <div className="flex flex-col sm:flex-row w-full items-center gap-4 p-8 sm:justify-between justify-center overflow-hidden no-scrollbar max-h-[30vh] h-[25vh] bg-accent border-solid border-gray-400 border-2 rounded-3xl">
+            <div className="flex flex-col sm:flex-row w-full items-center gap-4 p-8 sm:justify-between justify-center overflow-hidden no-scrollbar max-h-[30vh] h-[25vh] bg-accent border-solid border-gray-600 border-2 rounded-3xl">
               <div className="flex justify-between items-center  gap-x-10 px-2 sm:px-0">
                 <div className="relative">
                   <UploadLogic />
@@ -97,7 +97,7 @@ export const Setting = () => {
           </div>
 
           <div className="flex justify-center w-full pt-6 px-6">
-            <div className="flex flex-col sm:flex-row justify-between w-full bg-accent border-solid border-gray-400 border-2 rounded-3xl">
+            <div className="flex flex-col sm:flex-row justify-between w-full bg-accent border-solid border-gray-600 border-2 rounded-3xl">
               <div className="h-full p-8 grid md:grid-cols-2 grid-cols-1 w-full gap-4">
                 {data_names.map((x, index) => (
                   <div className="w-full flex justify-center items-center">
@@ -115,7 +115,7 @@ export const Setting = () => {
           </div>
 
           <div className="flex justify-center w-full pt-6 px-6">
-            <div className="flex flex-col sm:flex-row justify-between w-full bg-accent border-solid border-gray-400 border-2 rounded-3xl">
+            <div className="flex flex-col sm:flex-row justify-between w-full bg-accent border-solid border-gray-600 border-2 rounded-3xl">
               <div className="h-full p-8 grid grid-cols-1 w-full">
                 <div className="w-full flex justify-center items-center">
                   {user.tfa === false ? (

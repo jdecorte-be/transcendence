@@ -1,10 +1,3 @@
-import UserImage from "../../assets/aymane.png";
-import yas from "../../assets/alaoui.png";
-import yas1 from "../../assets/alaoui.png";
-import yas2 from "../../assets/3.png";
-import yas3 from "../../assets/4.png";
-import yas4 from "../../assets/5.png";
-import yas5 from "../../assets/6.png";
 import SearchIcon from "../../assets/Search_icon.svg";
 import EditIcon from "../../assets/Edit_icon.svg";
 import More from "../../assets/more_icon.svg";
@@ -35,13 +28,6 @@ export enum RoomType {
 }
 
 export {
-  UserImage,
-  yas,
-  yas1,
-  yas2,
-  yas3,
-  yas4,
-  yas5,
   SearchIcon,
   EditIcon,
   More,
