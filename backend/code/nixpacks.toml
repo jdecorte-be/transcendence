@@ -1,2 +1,7 @@
 [variables]
-NIXPACKS_NODE_VERSION = "25"
+# Use latest Node LTS major.
+NIXPACKS_NODE_VERSION = "22"
+
+[phases.setup]
+# Pin nixpkgs to a Node 22.x archive to avoid Node 18 EOL errors.
+nixpkgsArchive = "bf744fe90419885eefced41b3e5ae442d732712d"
