@@ -1,0 +1,15 @@
+FROM oven/bun:1.1.8-alpine
+
+WORKDIR /app
+
+ENV NODE_ENV=development
+
+COPY --chown=bun:bun ./code/package.json ./
+
+RUN bun install --no-progress
+
+COPY --chown=bun:bun ./code ./
+
+USER bun
+
+CMD ["sh", "-c", "bunx prisma studio & bun run start:dev"]

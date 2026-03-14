@@ -1,0 +1,48 @@
+version : "3.9"
+services :
+  front:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    image: frontend_dev:local
+    volumes:
+      - ./frontend/code/src:/app/src
+    networks:
+      - pongnet
+    restart: always
+    init: true
+    ports:
+      - 3000:3000
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: test
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - pongnet
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    image: backend_dev:local
+    networks:
+      - pongnet
+    depends_on: 
+      - database
+    volumes:
+      - ./backend/code/src:/app/src
+      - ./backend/code/prisma:/app/prisma
+    restart: always
+    init : true
+    ports:
+      - 5555:5555
+      - 3001:3001
+      - 3004:3004
+volumes: 
+  database:
+networks:
+  pongnet:
+  
