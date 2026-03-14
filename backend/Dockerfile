@@ -1,32 +1,32 @@
-FROM node:18-alpine AS deps
+FROM oven/bun:1.1.8-alpine AS deps
 
 WORKDIR /app
 
-COPY ./code/package*.json ./
+COPY ./code/package.json ./
 
-RUN npm ci
+RUN bun install --no-progress
 
-FROM node:18-alpine AS build
+FROM oven/bun:1.1.8-alpine AS build
 
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY ./code ./
 
-RUN npm run build
+RUN bun run build
 
-FROM node:18-alpine AS runtime
+FROM oven/bun:1.1.8-alpine AS runtime
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY ./code/package*.json ./
-RUN npm ci --omit=dev
+COPY ./code/package.json ./
+RUN bun install --production --no-progress
 
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 
-USER node
+USER bun
 
-CMD ["node", "dist/main.js"]
+CMD ["bun", "run", "start:prod"]

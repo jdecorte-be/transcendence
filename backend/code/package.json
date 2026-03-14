@@ -1,5 +1,6 @@
 {
-  "name": "PongGame",
+  "name": "transcendence-backend",
+  "packageManager": "bun@1.1.8",
   "volta": {
     "node": "18.18.0",
     "npm": "10.1.0"

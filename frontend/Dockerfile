@@ -1,14 +1,14 @@
-FROM node:20-alpine AS build
+FROM oven/bun:1.1.8-alpine AS build
 
 WORKDIR /app
 
-COPY ./code/package*.json ./
+COPY ./code/package.json ./
 
-RUN npm ci
+RUN bun install --no-progress
 
 COPY ./code ./
 
-RUN npm run build
+RUN bun run build
 
 FROM alpine:3.19
 

@@ -1,16 +1,16 @@
-FROM node:20-alpine
+FROM oven/bun:1.1.8-alpine
 
 WORKDIR /app
 
 ENV NODE_ENV=development
 
-COPY --chown=node:node ./code/package*.json ./
+COPY --chown=bun:bun ./code/package.json ./
 
-RUN npm ci
+RUN bun install --no-progress
 
-COPY --chown=node:node ./code ./
+COPY --chown=bun:bun ./code ./
 
-USER node
+USER bun
 
-CMD ["npm", "start"]
+CMD ["bun", "run", "start"]
 

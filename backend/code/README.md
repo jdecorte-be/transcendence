@@ -29,33 +29,33 @@
 ## Installation
 
 ```bash
-$ npm install
+$ bun install
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ npm run start
+$ bun run start
 
 # watch mode
-$ npm run start:dev
+$ bun run start:dev
 
 # production mode
-$ npm run start:prod
+$ bun run start:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ npm run test
+$ bun run test
 
 # e2e tests
-$ npm run test:e2e
+$ bun run test:e2e
 
 # test coverage
-$ npm run test:cov
+$ bun run test:cov
 ```
 
 ## Support
