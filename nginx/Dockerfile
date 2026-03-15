@@ -1,14 +1,15 @@
-FROM oven/bun:1.1.8-alpine AS build
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
 COPY ./frontend/code/package.json ./
+COPY ./frontend/code/package-lock.json ./
 
-RUN bun install --no-progress
+RUN npm ci --no-audit --no-fund
 
 COPY ./frontend/code ./
 
-RUN bun run build
+RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:1.25-alpine
 
