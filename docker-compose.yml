@@ -9,9 +9,6 @@ services :
       - ./.env
     networks:
       - pongnet
-    depends_on:
-      database:
-        condition: service_healthy
     expose:
       - 3001
       - 3004
