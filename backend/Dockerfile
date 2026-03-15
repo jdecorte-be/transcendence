@@ -1,4 +1,4 @@
-FROM oven/bun:1.1.8-alpine AS deps
+FROM node:18-alpine AS deps
 
 WORKDIR /app
 
@@ -6,18 +6,18 @@ RUN apk add --no-cache libstdc++ python3 make g++
 
 COPY ./code/package.json ./
 
-RUN bun install --no-progress
+RUN npm install --no-audit --no-fund
 
-FROM oven/bun:1.1.8-alpine AS build
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY ./code ./
 
-RUN bun run build
+RUN npm run build
 
-FROM oven/bun:1.1.8-alpine AS runtime
+FROM node:18-alpine AS runtime
 
 WORKDIR /app
 
@@ -26,11 +26,9 @@ ENV NODE_ENV=production
 RUN apk add --no-cache libstdc++ python3 make g++
 
 COPY ./code/package.json ./
-RUN bun install --production --no-progress
+RUN npm install --omit=dev --no-audit --no-fund
 
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 
-USER bun
-
-CMD ["bun", "run", "start:prod"]
+CMD ["node", "dist/main"]
