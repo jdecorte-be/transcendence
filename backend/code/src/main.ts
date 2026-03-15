@@ -13,13 +13,12 @@ import { GatewayAdapter } from './gateways/gateway-adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const corsOrigins = (process.env.CORS_ORIGIN || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
   const corsOptions = {
-    origin: process.env.CORS_ORIGIN?.split(',') || [
-      'http://localhost:8000',
-      'http://localhost:3000',
-      'http://142.93.161.63',
-      'http://164.92.243.105',
-    ],
+    origin: corsOrigins,
     credentials: true,
   };
   app.enableCors(corsOptions);

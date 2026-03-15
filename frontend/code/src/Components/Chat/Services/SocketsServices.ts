@@ -13,11 +13,15 @@ export const useSocketStore = create<SocketStore>((set) => ({
   connected: false,
   setSocket: () => {
     let newSocket: any = null;
+    const socketEndpoint = process.env.REACT_APP_SOCKET_ENDPOINT;
 
     set((state) => {
       if (state.socket === null) {
+        if (!socketEndpoint) {
+          return state;
+        }
         newSocket = io(
-          process.env.REACT_APP_SOCKET_ENDPOINT || "http://localhost:3004",
+          socketEndpoint,
           {
             transports: ["websocket"],
             reconnection: true,
