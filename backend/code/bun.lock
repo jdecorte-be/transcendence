@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "PongGame",
+      "name": "transcendence-backend",
       "dependencies": {
         "@nestjs/bull": "^10.0.1",
         "@nestjs/common": "^10.0.0",
@@ -30,6 +30,7 @@
         "otplib": "^12.0.1",
         "passport": "^0.6.0",
         "passport-42": "^1.2.6",
+        "passport-github2": "^0.1.12",
         "passport-jwt": "^4.0.1",
         "prisma": "^5.2.0",
         "qrcode": "^1.5.3",
@@ -50,6 +51,7 @@
         "@types/jest": "^29.5.2",
         "@types/multer": "^1.4.8",
         "@types/node": "^20.3.1",
+        "@types/passport-github2": "^1.2.6",
         "@types/passport-jwt": "^3.0.9",
         "@types/prompt": "^1.1.7",
         "@types/prompt-sync": "^4.2.2",
@@ -410,9 +412,15 @@
 
     "@types/normalize-package-data": ["@types/normalize-package-data@2.4.4", "", {}, "sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA=="],
 
+    "@types/oauth": ["@types/oauth@0.9.6", "", { "dependencies": { "@types/node": "*" } }, "sha512-H9TRCVKBNOhZZmyHLqFt9drPM9l+ShWiqqJijU1B8P3DX3ub84NjxDuy+Hjrz+fEca5Kwip3qPMKNyiLgNJtIA=="],
+
     "@types/passport": ["@types/passport@1.0.17", "", { "dependencies": { "@types/express": "*" } }, "sha512-aciLyx+wDwT2t2/kJGJR2AEeBz0nJU4WuRX04Wu9Dqc5lSUtwu0WERPHYsLhF9PtseiAMPBGNUOtFjxZ56prsg=="],
 
+    "@types/passport-github2": ["@types/passport-github2@1.2.9", "", { "dependencies": { "@types/express": "*", "@types/passport": "*", "@types/passport-oauth2": "*" } }, "sha512-/nMfiPK2E6GKttwBzwj0Wjaot8eHrM57hnWxu52o6becr5/kXlH/4yE2v2rh234WGvSgEEzIII02Nc5oC5xEHA=="],
+
     "@types/passport-jwt": ["@types/passport-jwt@3.0.13", "", { "dependencies": { "@types/express": "*", "@types/jsonwebtoken": "*", "@types/passport-strategy": "*" } }, "sha512-fjHaC6Bv8EpMMqzTnHP32SXlZGaNfBPC/Po5dmRGYi2Ky7ljXPbGnOy+SxZqa6iZvFgVhoJ1915Re3m93zmcfA=="],
+
+    "@types/passport-oauth2": ["@types/passport-oauth2@1.8.0", "", { "dependencies": { "@types/express": "*", "@types/oauth": "*", "@types/passport": "*" } }, "sha512-6//z+4orIOy/g3zx17HyQ71GSRK4bs7Sb+zFasRoc2xzlv7ZCJ+vkDBYFci8U6HY+or6Zy7ajf4mz4rK7nsWJQ=="],
 
     "@types/passport-strategy": ["@types/passport-strategy@0.2.38", "", { "dependencies": { "@types/express": "*", "@types/passport": "*" } }, "sha512-GC6eMqqojOooq993Tmnmp7AUTbbQSgilyvpCYQjT+H6JfG/g6RGc7nXEniZlp0zyKJ0WUdOiZWLBZft9Yug1uA=="],
 
@@ -1353,6 +1361,8 @@
     "passport": ["passport@0.6.0", "", { "dependencies": { "passport-strategy": "1.x.x", "pause": "0.0.1", "utils-merge": "^1.0.1" } }, "sha512-0fe+p3ZnrWRW74fe8+SvCyf4a3Pb2/h7gFkQ8yTJpAO50gDzlfjZUZTO1k5Eg9kUct22OxHLqDZoKUWRHOh9ug=="],
 
     "passport-42": ["passport-42@1.2.6", "", { "dependencies": { "passport-oauth2": "^1.4.0" } }, "sha512-a1SraWSwH33NqRDe9ScG4MQwfj7RRBYLFtrJySn4tU4Ou7+caLxj6VQgaL4i+eZoKC6QAooL1Nqevn/W8vLXuQ=="],
+
+    "passport-github2": ["passport-github2@0.1.12", "", { "dependencies": { "passport-oauth2": "1.x.x" } }, "sha512-3nPUCc7ttF/3HSP/k9sAXjz3SkGv5Nki84I05kSQPo01Jqq1NzJACgMblCK0fGcv9pKCG/KXU3AJRDGLqHLoIw=="],
 
     "passport-jwt": ["passport-jwt@4.0.1", "", { "dependencies": { "jsonwebtoken": "^9.0.0", "passport-strategy": "^1.0.0" } }, "sha512-UCKMDYhNuGOBE9/9Ycuoyh7vP6jpeTp/+sfMJl7nLff/t6dps+iaeE0hhNkKN8/HZHcJ7lCdOyDxHdDoxoSvdQ=="],
 

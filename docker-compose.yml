@@ -1,0 +1,68 @@
+version : "3.9"
+services :
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend_prod:local
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      AT_SECRET: ${AT_SECRET}
+      RT_SECRET: ${RT_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      WS_CORS_ORIGIN: ${WS_CORS_ORIGIN}
+      FRONT_URL: ${FRONT_URL}
+      FT_CLIENT_ID: ${FT_CLIENT_ID}
+      FT_CLIENT_SECRET: ${FT_CLIENT_SECRET}
+      FT_CALLBACK_URL: ${FT_CALLBACK_URL}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL}
+      CLD_CLOUD_NAME: ${CLD_CLOUD_NAME}
+      CLD_API_KEY: ${CLD_API_KEY}
+      CLD_API_SECRET: ${CLD_API_SECRET}
+    networks:
+      - pongnet
+    expose:
+      - 3001
+      - 3004
+    init: true
+    restart: always
+    
+  migration:
+    build:
+      context: ./backend/code/prisma
+      dockerfile: Dockerfile
+    image: prisma_migration:local
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    networks:
+      - pongnet
+    restart: on-failure
+
+  nginx :
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+      args:
+        REACT_APP_API_ENDPOINT: ${REACT_APP_API_ENDPOINT}
+        REACT_APP_SOCKET_ENDPOINT: ${REACT_APP_SOCKET_ENDPOINT}
+        REACT_APP_AUTH_PATH: ${REACT_APP_AUTH_PATH}
+        REACT_APP_GITHUB_AUTH_PATH: ${REACT_APP_GITHUB_AUTH_PATH}
+        REACT_APP_LOGOUT: ${REACT_APP_LOGOUT}
+    image: nginx_prod:local
+    networks:
+      - pongnet
+      - dokploy-network
+    depends_on:
+      - backend
+    ports:
+      - 8000:8080
+    init: true
+    restart: always
+   
+networks:
+  pongnet:
+  dokploy-network:
+    external: true
+  
