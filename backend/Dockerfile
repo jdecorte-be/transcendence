@@ -2,6 +2,8 @@ FROM oven/bun:1.1.8-alpine AS deps
 
 WORKDIR /app
 
+RUN apk add --no-cache libstdc++ python3 make g++
+
 COPY ./code/package.json ./
 
 RUN bun install --no-progress
@@ -20,6 +22,8 @@ FROM oven/bun:1.1.8-alpine AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
+
+RUN apk add --no-cache libstdc++ python3 make g++
 
 COPY ./code/package.json ./
 RUN bun install --production --no-progress
