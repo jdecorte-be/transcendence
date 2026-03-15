@@ -33,6 +33,12 @@ services :
     build:
       context: .
       dockerfile: nginx/Dockerfile
+      args:
+        REACT_APP_API_ENDPOINT: ${REACT_APP_API_ENDPOINT}
+        REACT_APP_SOCKET_ENDPOINT: ${REACT_APP_SOCKET_ENDPOINT}
+        REACT_APP_AUTH_PATH: ${REACT_APP_AUTH_PATH}
+        REACT_APP_GITHUB_AUTH_PATH: ${REACT_APP_GITHUB_AUTH_PATH}
+        REACT_APP_LOGOUT: ${REACT_APP_LOGOUT}
     image: nginx_prod:local
     networks:
       - pongnet
