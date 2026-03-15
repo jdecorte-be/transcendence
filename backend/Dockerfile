@@ -15,6 +15,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY ./code ./
 
+RUN npx prisma generate
 RUN npm run build
 
 FROM node:18-alpine AS runtime
@@ -26,9 +27,11 @@ ENV NODE_ENV=production
 RUN apk add --no-cache libstdc++ python3 make g++
 
 COPY ./code/package.json ./
+COPY --from=build /app/prisma ./prisma
+
 RUN npm install --omit=dev --no-audit --no-fund
+RUN npx prisma generate
 
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/prisma ./prisma
 
 CMD ["node", "dist/main"]
