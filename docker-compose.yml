@@ -29,6 +29,17 @@ services :
     init: true
     restart: always
     
+  migration:
+    build:
+      context: ./backend/code/prisma
+      dockerfile: Dockerfile
+    image: prisma_migration:local
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    networks:
+      - pongnet
+    restart: on-failure
+
   nginx :
     build:
       context: .
