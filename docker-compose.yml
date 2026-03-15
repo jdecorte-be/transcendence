@@ -32,24 +32,7 @@ services :
       - 8000:8080
     init: true
     restart: always
-
-  migration:
-    build:
-      context: ./backend/code/prisma
-      dockerfile: Dockerfile
-    image: prisma_migration:local
-    env_file:
-      - ./.env
-    networks:
-      - pongnet
-    depends_on:
-      database:
-        condition: service_healthy
-    restart: on-failure
    
-volumes: 
-  database:
-
 networks:
   pongnet:
   dokploy-network:
