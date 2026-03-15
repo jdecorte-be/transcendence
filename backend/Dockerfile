@@ -24,7 +24,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-RUN apk add --no-cache libstdc++ python3 make g++
+RUN apk add --no-cache libstdc++ python3 make g++ openssl
 
 COPY ./code/package.json ./
 COPY --from=build /app/prisma ./prisma
