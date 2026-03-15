@@ -5,6 +5,8 @@ services :
       context: ./backend
       dockerfile: Dockerfile
     image: backend_prod:local
+    env_file:
+      - ./.env
     networks:
       - pongnet
     depends_on: 
