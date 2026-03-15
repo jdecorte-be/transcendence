@@ -16,7 +16,7 @@ import { FtOauthGuard } from './guards/ft.guard';
 import { GithubOauthGuard } from './guards/github.guard';
 import { GetCurrentUser } from './decorator/get_current_user.decorator';
 import { Tokens } from './types';
-import { Response } from 'express';
+import { Response, CookieOptions } from 'express';
 import { RtGuard } from './guards/rt.guard';
 import { ApiCookieAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { TfaValidateDto } from './dto/tfa-validta.dto';
@@ -25,9 +25,10 @@ const cookieDomain = process.env.COOKIE_DOMAIN;
 const isSecureCookie =
   (process.env.COOKIE_SECURE || '').toLowerCase() === 'true' ||
   (process.env.FRONT_URL || '').startsWith('https://');
-const baseCookieOptions = {
+const sameSite: CookieOptions['sameSite'] = isSecureCookie ? 'none' : 'lax';
+const baseCookieOptions: CookieOptions = {
   httpOnly: true,
-  sameSite: isSecureCookie ? 'none' : 'lax',
+  sameSite,
   secure: isSecureCookie,
   ...(cookieDomain ? { domain: cookieDomain } : {}),
 };

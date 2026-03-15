@@ -5,15 +5,16 @@ import { JwtUtils } from '../utils/jwt_utils/jwt_utils';
 import { UsersService } from 'src/users/users.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import * as crypto from 'crypto';
-import { Response } from 'express';
+import { Response, CookieOptions } from 'express';
 
 const cookieDomain = process.env.COOKIE_DOMAIN;
 const isSecureCookie =
   (process.env.COOKIE_SECURE || '').toLowerCase() === 'true' ||
   (process.env.FRONT_URL || '').startsWith('https://');
-const baseCookieOptions = {
+const sameSite: CookieOptions['sameSite'] = isSecureCookie ? 'none' : 'lax';
+const baseCookieOptions: CookieOptions = {
   httpOnly: true,
-  sameSite: isSecureCookie ? 'none' : 'lax',
+  sameSite,
   secure: isSecureCookie,
   ...(cookieDomain ? { domain: cookieDomain } : {}),
 };
