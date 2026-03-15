@@ -9,12 +9,13 @@ services :
       - ./.env
     networks:
       - pongnet
-    depends_on: 
-      - database
-    ports:
-      - 3001:3001
-      - 3004:3004
-    init : true
+    depends_on:
+      database:
+        condition: service_healthy
+    expose:
+      - 3001
+      - 3004
+    init: true
     restart: always
     
   nginx :
@@ -24,6 +25,7 @@ services :
     image: nginx_prod:local
     networks:
       - pongnet
+      - dokploy-network
     depends_on:
       - backend
     ports:
@@ -40,6 +42,11 @@ services :
       - database:/var/lib/postgresql/data
     networks:
       - pongnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   migration:
     build:
@@ -51,11 +58,15 @@ services :
     networks:
       - pongnet
     depends_on:
-      - database
+      database:
+        condition: service_healthy
+    restart: on-failure
    
 volumes: 
   database:
 
 networks:
   pongnet:
+  dokploy-network:
+    external: true
   
