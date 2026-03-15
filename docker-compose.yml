@@ -1,0 +1,61 @@
+version : "3.9"
+services :
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: backend_prod:local
+    env_file:
+      - ./.env
+    networks:
+      - pongnet
+    depends_on: 
+      - database
+    ports:
+      - 3001:3001
+      - 3004:3004
+    init : true
+    restart: always
+    
+  nginx :
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    image: nginx_prod:local
+    networks:
+      - pongnet
+    depends_on:
+      - backend
+    ports:
+      - 8000:8080
+    init: true
+    restart: always
+
+  database:
+    image: postgres:16-alpine
+    restart: always
+    env_file:
+      - ./.env
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - pongnet
+
+  migration:
+    build:
+      context: ./backend/code/prisma
+      dockerfile: Dockerfile
+    image: prisma_migration:local
+    env_file:
+      - ./.env
+    networks:
+      - pongnet
+    depends_on:
+      - database
+   
+volumes: 
+  database:
+
+networks:
+  pongnet:
+  
