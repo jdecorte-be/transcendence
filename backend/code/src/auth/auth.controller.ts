@@ -21,6 +21,17 @@ import { RtGuard } from './guards/rt.guard';
 import { ApiCookieAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { TfaValidateDto } from './dto/tfa-validta.dto';
 
+const cookieDomain = process.env.COOKIE_DOMAIN;
+const isSecureCookie =
+  (process.env.COOKIE_SECURE || '').toLowerCase() === 'true' ||
+  (process.env.FRONT_URL || '').startsWith('https://');
+const baseCookieOptions = {
+  httpOnly: true,
+  sameSite: isSecureCookie ? 'none' : 'lax',
+  secure: isSecureCookie,
+  ...(cookieDomain ? { domain: cookieDomain } : {}),
+};
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -35,9 +46,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Res({ passthrough: true }) res: Response, @Body() dto: AuthDto) {
     const tokens: Tokens = await this.authService.login(dto);
-    res.cookie('X-Access-Token', tokens.access_token, { httpOnly: true });
+    res.cookie('X-Access-Token', tokens.access_token, baseCookieOptions);
     res.cookie('X-Refresh-Token', tokens.refresh_token, {
-      httpOnly: true,
+      ...baseCookieOptions,
       path: '/auth',
     });
   }
@@ -77,8 +88,11 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.logout(userId);
-    res.clearCookie('X-Access-Token');
-    res.clearCookie('X-Refresh-Token');
+    res.clearCookie('X-Access-Token', baseCookieOptions);
+    res.clearCookie('X-Refresh-Token', {
+      ...baseCookieOptions,
+      path: '/auth',
+    });
     return { message: 'ok' };
   }
 
@@ -93,9 +107,9 @@ export class AuthController {
   ) {
     const tokens: Tokens = await this.authService.refresh(refreshToken, userId);
 
-    res.cookie('X-Access-Token', tokens.access_token, { httpOnly: true });
+    res.cookie('X-Access-Token', tokens.access_token, baseCookieOptions);
     res.cookie('X-Refresh-Token', tokens.refresh_token, {
-      httpOnly: true,
+      ...baseCookieOptions,
       path: '/auth',
     });
 
@@ -116,9 +130,9 @@ export class AuthController {
       return;
     }
     const tokens = data.tokens;
-    res.cookie('X-Access-Token', tokens.access_token, { httpOnly: true });
+    res.cookie('X-Access-Token', tokens.access_token, baseCookieOptions);
     res.cookie('X-Refresh-Token', tokens.refresh_token, {
-      httpOnly: true,
+      ...baseCookieOptions,
       path: '/auth',
     });
   }

@@ -7,6 +7,17 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import * as crypto from 'crypto';
 import { Response } from 'express';
 
+const cookieDomain = process.env.COOKIE_DOMAIN;
+const isSecureCookie =
+  (process.env.COOKIE_SECURE || '').toLowerCase() === 'true' ||
+  (process.env.FRONT_URL || '').startsWith('https://');
+const baseCookieOptions = {
+  httpOnly: true,
+  sameSite: isSecureCookie ? 'none' : 'lax',
+  secure: isSecureCookie,
+  ...(cookieDomain ? { domain: cookieDomain } : {}),
+};
+
 @Injectable()
 export class FtStrategy extends PassportStrategy(Strategy, '42') {
   constructor(
@@ -49,9 +60,9 @@ export class FtStrategy extends PassportStrategy(Strategy, '42') {
         tokens.refresh_token,
       );
 
-      res.cookie('X-Access-Token', tokens.access_token, { httpOnly: true });
+      res.cookie('X-Access-Token', tokens.access_token, baseCookieOptions);
       res.cookie('X-Refresh-Token', tokens.refresh_token, {
-        httpOnly: true,
+        ...baseCookieOptions,
         path: '/auth',
       });
       res.redirect(
@@ -87,9 +98,9 @@ export class FtStrategy extends PassportStrategy(Strategy, '42') {
       tokens.refresh_token,
     );
 
-    res.cookie('X-Access-Token', tokens.access_token, { httpOnly: true });
+    res.cookie('X-Access-Token', tokens.access_token, baseCookieOptions);
     res.cookie('X-Refresh-Token', tokens.refresh_token, {
-      httpOnly: true,
+      ...baseCookieOptions,
       path: '/auth',
     });
     res.redirect(process.env.FRONT_URL ? process.env.FRONT_URL + '/Home' : '/');
