@@ -33,21 +33,6 @@ services :
     init: true
     restart: always
 
-  database:
-    image: postgres:16-alpine
-    restart: always
-    env_file:
-      - ./.env
-    volumes:
-      - database:/var/lib/postgresql/data
-    networks:
-      - pongnet
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   migration:
     build:
       context: ./backend/code/prisma
