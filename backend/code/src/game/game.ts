@@ -8,15 +8,6 @@ export class Game {
     private readonly mode: string,
   ) {}
 
-  private readonly baseFrameMs = Math.max(
-    8,
-    Number(process.env.GAME_TICK_MS) || 12,
-  );
-  private readonly minFrameMs = Math.max(
-    4,
-    Number(process.env.GAME_MIN_TICK_MS) || 6,
-  );
-
   private screenAdapter(player, x: number, y: number, ballsize: number) {
     const scale_x = player.w / this.w;
     const scale_y = player.h / this.h;
@@ -168,11 +159,11 @@ export class Game {
     this.x += this.dx;
     this.y += this.dy;
 
-    this.p1socket.volatile.emit(
+    this.p1socket.emit(
       'ball',
       this.screenAdapter(this.p1Res, this.x, this.y, this.ballSize),
     );
-    this.p2socket.volatile.emit(
+    this.p2socket.emit(
       'paddle',
       this.paddleAdapterP1toP2(
         this.p1Res,
@@ -183,11 +174,11 @@ export class Game {
       ),
     );
 
-    this.p2socket.volatile.emit(
+    this.p2socket.emit(
       'ball',
       this.screenAdapter(this.p2Res, this.x, this.y, this.ballSize),
     );
-    this.p1socket.volatile.emit(
+    this.p1socket.emit(
       'paddle',
       this.paddleAdapterP2toP1(
         this.p1Res,
@@ -254,11 +245,11 @@ export class Game {
       }, 10000);
       const speed = setInterval(() => {
         if (this.closeGame) clearInterval(speed);
-        if (this.frames > this.minFrameMs) this.frames -= 2;
+        if (this.frames >= 6) this.frames -= 2;
         else clearInterval(speed);
       }, 10000);
     } else {
-      this.frames = this.baseFrameMs;
+      this.frames = 16;
     }
 
     this.p1socket.on('up', () => {
@@ -379,7 +370,7 @@ export class Game {
     this.p2PaddleY = this.h / 2;
     this.ballSize = this.w / 42;
     if (this.m === 'classic') {
-      this.frames = this.baseFrameMs;
+      this.frames = 16;
     }
   }
   private gameid: string;
@@ -387,7 +378,7 @@ export class Game {
   private p2socket: Socket;
   private p1Data: any;
   private p2Data: any;
-  private frames: number = this.baseFrameMs;
+  private frames: number = 25;
   private w: number = 1067;
   private h: number = 600;
   private x: number = this.w / 2;
