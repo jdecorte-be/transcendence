@@ -55,7 +55,7 @@ export type State = {
 
 type Action = {
   login: () => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
   fetchNotifications: (offset: number, limit: number) => Promise<any>;
 
   toggleTfa: () => void;
@@ -227,40 +227,47 @@ export const useUserStore = createWithEqualityFn<State & Action>()(
         set({ ...userInitialValue });
         return userInitialValue.isLogged;
       },
-      logout: () => {
-        set(
-          {
-            isLogged: false,
-            id: "",
-            bio: "",
-            phone: "",
-            username: "",
-            name: {
-              first: "",
-              last: "",
+      logout: async () => {
+        try {
+          await api.get("/auth/logout");
+        } catch (error) {
+          // Ignore logout errors to ensure local cleanup still happens.
+        } finally {
+          localStorage.removeItem("userStore");
+          set(
+            {
+              isLogged: false,
+              id: "",
+              bio: "",
+              phone: "",
+              username: "",
+              name: {
+                first: "",
+                last: "",
+              },
+              picture: {
+                thumbnail: "",
+                medium: "",
+                large: "",
+              },
+              email: "",
+              tfa: false,
+              friendListIds: [],
+              banListIds: [],
+              achievement: null,
+              dmsIds: [],
+              history: [],
+              chatRoomsJoinedIds: [],
+              profileComplet: false,
+              notifications: [],
+              gameInvitation: {
+                gameId: "",
+                inviterId: "",
+              },
             },
-            picture: {
-              thumbnail: "",
-              medium: "",
-              large: "",
-            },
-            email: "",
-            tfa: false,
-            friendListIds: [],
-            banListIds: [],
-            achievement: null,
-            dmsIds: [],
-            history: [],
-            chatRoomsJoinedIds: [],
-            profileComplet: false,
-            notifications: [],
-            gameInvitation: {
-              gameId: "",
-              inviterId: "",
-            },
-          },
-          true,
-        );
+            true,
+          );
+        }
       },
 
       fetchNotifications: async (offset: number, limit: number) => {
