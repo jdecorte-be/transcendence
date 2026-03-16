@@ -39,13 +39,16 @@ export class GatewayAdapter extends IoAdapter {
         cookies['X-Acces-Token'];
 
       if (!accessToken) {
+        console.debug('WS auth failed: missing access token cookie');
         return next(new Error('Unauthorized'));
       }
 
       try {
         const decoded = this.jwtService.verify(accessToken);
         client.data.user = decoded;
+        console.debug('WS auth ok', { userId: decoded?.sub });
       } catch (error) {
+        console.debug('WS auth failed: invalid token');
         return next(new Error('Unauthorized'));
       }
       return next();
