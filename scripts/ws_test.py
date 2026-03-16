@@ -46,12 +46,16 @@ def main() -> int:
         print("disconnected")
 
     try:
+        connect_url = url
+        if user_id:
+            separator = "&" if "?" in url else "?"
+            connect_url = f"{url}{separator}userId={user_id}"
+
         sio.connect(
-            url,
+            connect_url,
             transports=["websocket"],
             headers=headers,
             auth={"userId": user_id} if user_id else None,
-            query_string=f"userId={user_id}" if user_id else None,
             socketio_path="/socket.io",
         )
         time.sleep(5)

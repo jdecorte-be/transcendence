@@ -1,36 +1,10 @@
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { ServerOptions, Socket } from 'socket.io';
 import * as http from 'http';
-import { JwtService } from '@nestjs/jwt';
-import { JwtConsts } from 'src/auth/constants/constants';
-
 export class GatewayAdapter extends IoAdapter {
-  private jwtService = new JwtService({
-    secret: JwtConsts.at_secret,
-  });
-
-  private parseCookies(rawCookieHeader?: string): Record<string, string> {
-    if (!rawCookieHeader) {
-      return {};
-    }
-
-    return rawCookieHeader.split(';').reduce((acc, cookie) => {
-      const separatorIndex = cookie.indexOf('=');
-      if (separatorIndex < 0) {
-        return acc;
-      }
-
-      const key = cookie.slice(0, separatorIndex).trim();
-      const value = cookie.slice(separatorIndex + 1).trim();
-      acc[key] = decodeURIComponent(value);
-      return acc;
-    }, {} as Record<string, string>);
-  }
-
   createIOServer(port: number, options?: ServerOptions): any {
     const server = super.createIOServer(port, options);
     server.use((client: Socket, next) => {
-      const req = client.request as http.IncomingMessage;
       const authUserId =
         (typeof client.handshake.auth?.userId === 'string'
           ? client.handshake.auth.userId
@@ -39,34 +13,12 @@ export class GatewayAdapter extends IoAdapter {
           ? client.handshake.query.userId
           : undefined);
 
-      if (authUserId) {
-        client.data.user = { sub: authUserId };
-        console.debug('WS auth ok', { userId: authUserId, source: 'handshake' });
-        return next();
-      }
-
-      const cookies = this.parseCookies(req.headers.cookie);
-      client.data.cookies = cookies;
-
-      console.debug('WS auth cookies', { keys: Object.keys(cookies) });
-
-      const accessToken =
-        cookies['X-Access-Token'] ||
-        cookies['X-Acces-Token'];
-
-      if (!accessToken) {
-        console.debug('WS auth failed: missing access token cookie');
+      if (!authUserId) {
         return next(new Error('Unauthorized'));
       }
 
-      try {
-        const decoded = this.jwtService.verify(accessToken);
-        client.data.user = decoded;
-        console.debug('WS auth ok', { userId: decoded?.sub });
-      } catch (error) {
-        console.debug('WS auth failed: invalid token');
-        return next(new Error('Unauthorized'));
-      }
+      client.data.user = { sub: authUserId };
+      console.debug('WS auth ok', { userId: authUserId, source: 'handshake' });
       return next();
     });
     return server;
