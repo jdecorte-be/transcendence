@@ -23,6 +23,7 @@ services :
       CLD_API_SECRET: ${CLD_API_SECRET}
     networks:
       - pongnet
+      - dokploy-network
     expose:
       - 3001
       - 3004

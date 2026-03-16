@@ -24,6 +24,7 @@ export const useSocketStore = create<SocketStore>((set) => ({
           socketEndpoint,
           {
             transports: ["websocket"],
+            withCredentials: true,
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionDelayMax: 1000,
