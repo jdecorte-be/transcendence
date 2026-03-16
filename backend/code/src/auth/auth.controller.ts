@@ -47,6 +47,7 @@ export class AuthController {
       httpOnly: true,
       sameSite,
       secure: isSecureCookie,
+      path: '/',
       ...(cookieDomain ? { domain: cookieDomain } : {}),
     };
   }
