@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
 import { create } from "zustand";
+import { useUserStore } from "../../../Stores/stores";
 
 interface SocketStore {
   socket: any;
@@ -20,17 +21,16 @@ export const useSocketStore = create<SocketStore>((set) => ({
         if (!socketEndpoint) {
           return state;
         }
-        newSocket = io(
-          socketEndpoint,
-          {
-            transports: ["websocket"],
-            withCredentials: true,
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 1000,
-            reconnectionAttempts: 5,
-          },
-        );
+        const userId = useUserStore.getState().id;
+        newSocket = io(socketEndpoint, {
+          transports: ["websocket"],
+          withCredentials: true,
+          auth: userId ? { userId } : undefined,
+          reconnection: true,
+          reconnectionDelay: 1000,
+          reconnectionDelayMax: 1000,
+          reconnectionAttempts: 5,
+        });
 
         // Set socket
         set({ ...state, socket: newSocket });

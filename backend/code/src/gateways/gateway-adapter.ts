@@ -31,8 +31,24 @@ export class GatewayAdapter extends IoAdapter {
     const server = super.createIOServer(port, options);
     server.use((client: Socket, next) => {
       const req = client.request as http.IncomingMessage;
+      const authUserId =
+        (typeof client.handshake.auth?.userId === 'string'
+          ? client.handshake.auth.userId
+          : undefined) ||
+        (typeof client.handshake.query?.userId === 'string'
+          ? client.handshake.query.userId
+          : undefined);
+
+      if (authUserId) {
+        client.data.user = { sub: authUserId };
+        console.debug('WS auth ok', { userId: authUserId, source: 'handshake' });
+        return next();
+      }
+
       const cookies = this.parseCookies(req.headers.cookie);
       client.data.cookies = cookies;
+
+      console.debug('WS auth cookies', { keys: Object.keys(cookies) });
 
       const accessToken =
         cookies['X-Access-Token'] ||

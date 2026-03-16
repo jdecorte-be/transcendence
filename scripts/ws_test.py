@@ -25,6 +25,7 @@ def main() -> int:
     load_env_file(os.path.join(script_dir, ".env"))
     url = os.getenv("WS_URL", "https://ws-transcendance.jdecorte.com")
     cookie = os.getenv("WS_COOKIE", "")
+    user_id = os.getenv("WS_USER_ID", "")
 
     headers = {}
     if cookie:
@@ -49,6 +50,7 @@ def main() -> int:
             url,
             transports=["websocket"],
             headers=headers,
+            auth={"userId": user_id} if user_id else None,
             socketio_path="/socket.io",
         )
         time.sleep(5)
