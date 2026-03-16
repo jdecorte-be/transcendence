@@ -8,7 +8,7 @@ import { useGameState } from "./States/GameState";
 import { useSocketStore } from "../Chat/Services/SocketsServices";
 import { useNavigate } from "react-router-dom";
 
-const DURATION = 20;
+const DURATION = 12;
 type Cords = {
   x: number;
   y: number;
@@ -51,15 +51,13 @@ export const Game = () => {
   }, []);
 
   const handleMove = throttlify((e: any) => {
-    socketStore.socket?.emit("mouse", e.evt.layerY);
+    socketStore.socket?.volatile.emit("mouse", e.evt.layerY);
   });
   const ArrowUp = () => {
-    socketStore.socket?.emit("up");
-    socketStore.socket?.off("up");
+    socketStore.socket?.volatile.emit("up");
   };
   const ArrowDown = () => {
-    socketStore.socket?.emit("down");
-    socketStore.socket?.off("down");
+    socketStore.socket?.volatile.emit("down");
   };
   useEffect(() => {
     socketStore.socket?.on("level", (l: number) => {
@@ -71,10 +69,11 @@ export const Game = () => {
     socketStore.socket?.on("game.end", () => {
       gameState.setEnd(true);
     });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowUp") socketStore.socket?.emit("up");
-      if (event.key === "ArrowDown") socketStore.socket?.emit("down");
-    });
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowUp") socketStore.socket?.volatile.emit("up");
+      if (event.key === "ArrowDown") socketStore.socket?.volatile.emit("down");
+    };
+    document.addEventListener("keydown", handleKeyDown);
     socketStore.socket?.on("ball", (cord: Cords) => {
       gameState.setBall({
         x: cord.x,
@@ -106,7 +105,7 @@ export const Game = () => {
       socketStore.socket?.off("t");
       socketStore.socket?.off("game.end");
 
-      window.removeEventListener("keydown", () => {});
+      document.removeEventListener("keydown", handleKeyDown);
     };
     // eslint-disable-next-line
   }, []);

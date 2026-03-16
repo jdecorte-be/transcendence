@@ -40,7 +40,8 @@ interface GameInvite {
     })(),
     credentials: true,
   },
-  transports: ['websocket', 'polling'],
+  transports: ['websocket'],
+  perMessageDeflate: false,
 })
 export class Gateways implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(

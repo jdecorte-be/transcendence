@@ -14,6 +14,11 @@ export class GameService {
     this.launchGame();
   }
 
+  private readonly matchmakingIntervalMs = Math.max(
+    50,
+    Number(process.env.GAME_MATCH_TICK_MS) || 250,
+  );
+
   private classicwaitingPlayers: { socket: Socket; userData: Partial<User> }[] =
     [];
 
@@ -64,7 +69,7 @@ export class GameService {
         const two_players = this.extraWaitingPlayers.splice(0, 2);
         this.eventEmitter.emit('game.launched', two_players, 'extra');
       }
-    }, 5027);
+    }, this.matchmakingIntervalMs);
   }
   async getUser(userId: string) {
     const user = await this.prisma.user.findUnique({
