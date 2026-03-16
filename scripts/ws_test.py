@@ -51,6 +51,7 @@ def main() -> int:
             transports=["websocket"],
             headers=headers,
             auth={"userId": user_id} if user_id else None,
+            query_string=f"userId={user_id}" if user_id else None,
             socketio_path="/socket.io",
         )
         time.sleep(5)
