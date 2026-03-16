@@ -74,7 +74,7 @@ export const Chat = () => {
         </div>
         {showChatRooms && (
           <div
-            className="z-10 absolute inset-0 lg:hidden bg-black/40"
+            className="z-10 absolute inset-0 lg:hidden bg-[color:var(--black)]/40"
             onClick={() => toggleChatRooms()}
           />
         )}

@@ -57,6 +57,33 @@ export const Table = (props: any) => {
   const [hasMore, setHasMore] = useState(true);
   const offset = useRef(0);
   const { id }: any = useParams();
+  const skeletonRows = Array.from({ length: 3 }, (_, index) => (
+    <tr
+      key={`skeleton-${index}`}
+      className="bg-accent border border-base-300/60 grow-0 rounded-2xl w-11/12 flex justify-between px-3 md:px-6 items-center h-16 md:h-20"
+    >
+      <td className="hidden md:w-28 md:flex md:justify-start">
+        <div className="h-3 w-20 rounded-full bg-base-300/60 animate-pulse" />
+      </td>
+      <td className="flex justify-center items-center grow w-auto">
+        <div className="flex justify-center items-center gap-x-3 md:gap-x-6 w-full overflow-hidden">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-base-300/60 animate-pulse" />
+            <div className="h-4 w-20 md:w-28 rounded-full bg-base-300/60 animate-pulse" />
+          </div>
+          <div className="h-6 w-16 md:w-20 rounded-full bg-base-300/60 animate-pulse" />
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-base-300/60 animate-pulse" />
+            <div className="h-4 w-20 md:w-28 rounded-full bg-base-300/60 animate-pulse" />
+          </div>
+        </div>
+      </td>
+      <td className="flex px-1 grow-0 justify-end items-center gap-x-2 w-20">
+        <div className="h-5 w-12 rounded-full bg-base-300/60 animate-pulse" />
+        <div className="h-4 w-6 rounded-full bg-base-300/60 animate-pulse" />
+      </td>
+    </tr>
+  ));
   const fetchData = async () => {
     try {
       const history: any = await api.get(`/game/history/${props.props.props}`, {
@@ -81,7 +108,7 @@ export const Table = (props: any) => {
   }, [props.props.props]);
 
   return history.length > 0 || loading === true ? (
-    <div className="w-full h-full overflow-auto">
+    <div className="w-full h-full overflow-auto pb-6">
       <div className="hidden md:flex items-center justify-between px-6 pb-2 text-xs text-neutral/60">
         <span className="w-28">Date</span>
         <span className="flex-1 text-center">Players</span>
@@ -96,7 +123,7 @@ export const Table = (props: any) => {
         }
         dataLength={history.length}
         next={fetchData}
-        className="overflow-auto"
+        className="overflow-auto pb-4"
         scrollableTarget="scrollTarget"
         endMessage={
           <span className="flex justify-center items-center p-8 text-neutral font-montserrat">
@@ -182,7 +209,7 @@ export const Table = (props: any) => {
                   </td>
                 </tr>
               ))}
-            {loading && <Loading size={"lg"} />}
+            {loading && skeletonRows}
           </tbody>
         </table>
       </InfiniteScroll>

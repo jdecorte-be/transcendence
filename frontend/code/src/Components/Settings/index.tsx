@@ -169,7 +169,7 @@ export const Setting = () => {
                             <input
                               type="text"
                               placeholder="000000"
-                              className="w-full max-w-[10rem] text-center border border-violet-600 bg-black rounded tracking-wider leading-none py-0.5"
+                              className="w-full max-w-[10rem] text-center border border-violet-600 bg-[var(--black)] rounded tracking-wider leading-none py-0.5"
                               maxLength={6}
                               onKeyDown={(event) => {
                                 if (
@@ -228,7 +228,7 @@ export const Setting = () => {
                             <input
                               type="text"
                               placeholder="000000"
-                              className="w-full max-w-[10rem] text-center border border-violet-600 bg-black rounded tracking-wider leading-none py-0.5"
+                              className="w-full max-w-[10rem] text-center border border-violet-600 bg-[var(--black)] rounded tracking-wider leading-none py-0.5"
                               maxLength={6}
                               onKeyDown={(event) => {
                                 if (

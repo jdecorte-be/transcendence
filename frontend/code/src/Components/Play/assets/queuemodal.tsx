@@ -5,7 +5,7 @@ export const QueueWaitModal = forwardRef<HTMLDialogElement, any>(
   (props, ref) => {
     const socketStore = useSocketStore();
     return (
-      <dialog ref={ref} id="queue_modal" className="modal backdrop:bg-black/70">
+      <dialog ref={ref} id="queue_modal" className="modal backdrop:bg-[color:var(--black)]/70">
         <div className="modal-box">
           <div className="modal-action flex flex-col gap-8">
             <div className="flex flex-row justify-center gap-4">

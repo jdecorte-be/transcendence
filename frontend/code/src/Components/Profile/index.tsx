@@ -176,18 +176,20 @@ export const Profile = () => {
 
   return (
     <>
-      <div className=" flex flex-col items-center h-full bg-accent">
-        <div className="relative pt-12 h-auto max-h-[30vh] min-h-[16vh] md:min-h-[28vh] xl:min-h-[33vh] w-[85vw]">
-          <div className="relative h-full w-full md:px-32 bg-[#2b3bfb] rounded-t-3xl">
+      <div className="flex flex-col items-center h-full bg-accent">
+        <div className="relative w-full max-w-[1100px] px-4 sm:px-0 pt-10">
+          <div className="relative h-[18vh] sm:h-[22vh] md:h-[28vh] xl:h-[32vh] overflow-hidden rounded-t-3xl bg-[radial-gradient(circle_at_top,_#2b3bfb,_#1a237e_60%,_#0b1120)]">
+            <div className="absolute inset-0 opacity-30 bg-[linear-gradient(120deg,_rgba(255,255,255,0.08),_transparent_55%)]"></div>
             <img
-              className="flex-1  w-full h-auto object-scale-down md:object-top object-bottom"
+              className="absolute inset-0 h-full w-full object-contain object-center"
               src={Hero}
               alt="bg hero"
-            ></img>
-            <div className=" absolute  bg-black top-0 left-0  object-scale-down object-top  opacity-40 h-full w-full rounded-t-3xl  z-10"></div>
+            />
+            <div className="absolute inset-0 bg-[color:var(--black)]/35"></div>
+            <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/30 blur-3xl"></div>
+            <div className="absolute -left-20 bottom-0 h-44 w-44 rounded-full bg-secondary/30 blur-3xl"></div>
             <Pong />
           </div>
-
 
           <div className="avatar absolute z-40 -bottom-6 sm:-bottom-8 md:-bottom-10 left-6 sm:left-12">
             <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full ring ring-neutral flex justify-center items-center ring-offset-base-100 ring-offset-1">

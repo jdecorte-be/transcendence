@@ -38,7 +38,7 @@ export const InvitationWaiting = forwardRef<HTMLDialogElement, any>(
       <dialog
         ref={ref}
         id="invitaion_waiting_modal"
-        className="modal backdrop:bg-black/70"
+        className="modal backdrop:bg-[color:var(--black)]/70"
       >
         <div className="modal-box">
           <div className="modal-action flex flex-col gap-8">
