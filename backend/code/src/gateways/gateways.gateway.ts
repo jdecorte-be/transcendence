@@ -26,10 +26,19 @@ interface GameInvite {
 
 @WebSocketGateway(3004, {
   cors: {
-    origin: (process.env.WS_CORS_ORIGIN || '')
-      .split(',')
-      .map((origin) => origin.trim())
-      .filter(Boolean),
+    origin: (() => {
+      const origins = (process.env.WS_CORS_ORIGIN || '')
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean);
+
+      if (process.env.NODE_ENV === 'production' && origins.length === 0) {
+        throw new Error('WS_CORS_ORIGIN must be set in production');
+      }
+
+      return origins;
+    })(),
+    credentials: true,
   },
   transports: ['websocket'],
 })
