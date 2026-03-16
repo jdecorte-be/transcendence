@@ -116,7 +116,7 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
       ) : (
         <div
           data-theme="mytheme"
-          className={`h-screen max-h-screen ${
+          className={`h-screen max-h-screen overflow-x-hidden ${
             !user.profileComplet ? "blur-lg" : ""
           }`}
         >
@@ -168,7 +168,7 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
               </button>
             </div>
             <div
-              className="sm:w-[92vw] xl:w-[95.5vw]  md:w-[93.5vw] w-screen right-0 z-10 h-full bg-accent sm:rounded-tl-2xl overflow-auto no-scrollbar"
+              className="flex-1 min-w-0 w-full z-10 h-full bg-accent sm:rounded-tl-2xl overflow-auto no-scrollbar"
               id="scrollTarget"
             >
               <Outlet />

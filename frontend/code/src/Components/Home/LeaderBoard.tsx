@@ -12,6 +12,17 @@ import { NullPlaceHolder } from "../Chat/Components/RoomChatHelpers";
 
 import api from "../../Api/base";
 
+const CLOUDINARY_BASE_URL =
+  "https://res.cloudinary.com/ds2oaoirs/image/upload";
+
+const buildAvatarUrl = (avatar?: string | null, size = 72) => {
+  if (!avatar) return "";
+  if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+    return avatar;
+  }
+  return `${CLOUDINARY_BASE_URL}/c_thumb,h_${size},w_${size}/${avatar}`;
+};
+
 export const LeaderBoard = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,36 +44,48 @@ export const LeaderBoard = () => {
       const newdata = await api.get(nextPageUrl);
       // End of pagination
       if (!newdata.data || newdata.data.length < 20) {
-        newdata.data && setUsers([...users, ...newdata.data]);
+        newdata.data && setUsers((prev) => [...prev, ...newdata.data]);
         setNextPageUrl(null);
         // Update hasMoreItems state
         hasMoreItems.current = false;
         return;
       }
       // Prepare next page
-      setUsers([...users, ...newdata.data]);
-      setNextPageUrl(`/leaderboard?offset=${page.current}&limit=20`);
+      setUsers((prev) => [...prev, ...newdata.data]);
+      setNextPageUrl(`/leaderboard?offset=${page.current + 20}&limit=20`);
       page.current += 20;
       // Update hasMoreItems state
       hasMoreItems.current = true;
     } catch (e) {
-      toast.error("Can't get leadeboard");
+      toast.error("Can't get leaderboard");
     } finally {
       setLoading(false);
       setFetching(false);
     }
-  }, [users, fetching, nextPageUrl]);
+  }, [fetching, nextPageUrl]);
 
   useEffect(() => {
     fetchItems();
-    page.current += 20;
     // eslint-disable-next-line
   }, []);
 
+  const podium = users.slice(0, 3);
+  const rest = users.slice(3);
+
   return (
-    <div className="flex flex-col rounded-2xl justify-start items-start mt-6 sm:h-full h-full w-full bg-base-200">
-      <div className="flex justify-start items-start gap-x-4 p-4 pb-0 md:p-8 md:pb-0">
-        <Chart /> <span className="font-montserrat">Leader Board</span>
+    <div className="flex flex-col rounded-2xl justify-start items-start mt-6 sm:h-full h-full w-full bg-base-200 border border-base-300/60 shadow-sm">
+      <div className="flex justify-between items-center w-full p-4 pb-0 md:p-8 md:pb-0">
+        <div className="flex justify-start items-center gap-x-3">
+          <Chart />
+          <div className="flex flex-col">
+            <span className="font-montserrat text-base sm:text-lg text-neutral">Leaderboard</span>
+            <span className="text-xs text-neutral/60">Top ranked players</span>
+          </div>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 text-xs text-neutral/60">
+          <Trophy className="w-4 h-4" />
+          Updated live
+        </div>
       </div>
 
       {users.length > 0 || loading ? (
@@ -84,65 +107,93 @@ export const LeaderBoard = () => {
             scrollableTarget="scrollTarget"
             style={{ overflow: "auto", height: "100%" }}
           >
-            <table className="table w-full border-separate border-spacing-x-0 border-spacing-y-2">
-              <thead>
-                <tr className="w-full px-10">
-                  <th>
-                    <div className="flex justify-center items-center w-18">
-                      Place
-                    </div>
-                  </th>
-                  <th>
-                    <div className="flex justify-center items-center w-full">
-                      User
-                    </div>
-                  </th>
-                  <th>
-                    <div className="flex justify-center items-center w-18">
-                      Score
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="no-scrollbar">
-                {!loading &&
-                  users.map((x: any, index: number) => (
-                    <tr
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-4 md:grid-cols-3">
+                {(loading ? Array.from({ length: 3 }) : podium).map(
+                  (x: any, index: number) => (
+                    <div
                       key={index}
-                      className="border-base-200 rounded-xl w-full px-4 h-16 sm:px-10 mb-2"
+                      className={`flex flex-col justify-between rounded-2xl border border-base-300/60 bg-accent/60 p-4 min-h-[140px] ${
+                        index === 0 ? "shadow-md" : "shadow-sm"
+                      }`}
                     >
-                      <td className="bg-accent rounded-l-xl">
-                        <div className="flex justify-center items-center gap-x-2 w-18">
-                          <Trophy className="w-5 h-5" /> {index + 1}
+                      {loading ? (
+                        <div className="flex flex-col gap-3 animate-pulse">
+                          <div className="h-4 w-20 rounded bg-base-300/70" />
+                          <div className="h-10 w-10 rounded-full bg-base-300/70" />
+                          <div className="h-4 w-32 rounded bg-base-300/70" />
                         </div>
-                      </td>
-                      <td className="bg-accent">
-                        <div className="flex justify-center items-center gap-x-2 hover:cursor-pointer">
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-between text-xs text-neutral/60">
+                            <span className="uppercase tracking-wide">#{index + 1}</span>
+                            <Trophy className="w-4 h-4" />
+                          </div>
                           <Link to={`/Profile/${x.userId}`}>
-                            <div className="flex justify-start items-center gap-4 hover:cursor-pointer w-52">
+                            <div className="flex items-center gap-3 mt-3">
                               <img
-                                className="w-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
-                                src={`https://res.cloudinary.com/trandandan/image/upload/c_thumb,h_72,w_72/${x?.avatar}`}
+                                className="w-12 h-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+                                src={buildAvatarUrl(x?.avatar, 72)}
                                 alt={x?.Username}
                               />
-                              <div className="flex font-montserrat text-neutral font-semibold">
-                                <span className="truncate w-40">
+                              <div className="flex flex-col">
+                                <span className="font-montserrat text-neutral font-semibold truncate max-w-[140px]">
                                   {x?.Username}
                                 </span>
+                                <span className="text-xs text-neutral/60">Wins</span>
                               </div>
                             </div>
                           </Link>
+                          <div className="flex items-center gap-2 mt-4 text-neutral">
+                            <Daimond className="w-4 h-4" />
+                            <span className="font-montserrat font-semibold">
+                              {x?.wins}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ),
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between text-xs text-neutral/60 px-2">
+                  <span>Rank</span>
+                  <span className="flex-1 ml-8">Player</span>
+                  <span>Score</span>
+                </div>
+                {!loading &&
+                  rest.map((x: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 bg-accent rounded-xl px-4 py-3 border border-base-300/40"
+                    >
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-base-100/60 text-sm text-neutral">
+                        {index + 4}
+                      </div>
+                      <Link to={`/Profile/${x.userId}`} className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <img
+                            className="w-9 h-9 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+                            src={buildAvatarUrl(x?.avatar, 72)}
+                            alt={x?.Username}
+                          />
+                          <span className="font-montserrat text-neutral font-semibold truncate">
+                            {x?.Username}
+                          </span>
                         </div>
-                      </td>
-                      <td className="bg-accent rounded-r-xl">
-                        <div className="flex justify-center items-center gap-x-2 w-18">
-                          <Daimond className="w-5 h-5" /> {x?.wins}
-                        </div>
-                      </td>
-                    </tr>
+                      </Link>
+                      <div className="flex items-center gap-2 text-neutral">
+                        <Daimond className="w-4 h-4" />
+                        <span className="font-montserrat font-semibold">
+                          {x?.wins}
+                        </span>
+                      </div>
+                    </div>
                   ))}
-              </tbody>
-            </table>
+              </div>
+            </div>
           </InfiniteScroll>
         </div>
       ) : (
