@@ -458,7 +458,7 @@ export const BotGame = () => {
         </Stage>
 
         {gameState.status === "ended" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+          <div className="absolute inset-0 flex items-center justify-center bg-[color:var(--black)]/60">
             <div className="flex flex-col items-center gap-4 bg-base-200 px-8 py-6 rounded-xl">
               <div className="font-lexend font-extrabold text-xl text-neutral">
                 {gameState.winner === "player" ? "You win" : "Bot wins"}

@@ -47,6 +47,11 @@
   html {
     @apply no-scrollbar;
     @apply font-montserrat;
+    @apply overflow-x-hidden;
+  }
+
+  body {
+    @apply overflow-x-hidden;
   }
 
   * {

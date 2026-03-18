@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
 import { create } from "zustand";
+import { useUserStore } from "../../../Stores/stores";
 
 interface SocketStore {
   socket: any;
@@ -20,17 +21,35 @@ export const useSocketStore = create<SocketStore>((set) => ({
         if (!socketEndpoint) {
           return state;
         }
-        newSocket = io(
-          socketEndpoint,
-          {
-            transports: ["websocket"],
-            withCredentials: true,
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 1000,
-            reconnectionAttempts: 5,
-          },
-        );
+        const userId = useUserStore.getState().id;
+        newSocket = io(socketEndpoint, {
+          transports: ["websocket"],
+          withCredentials: true,
+          auth: userId ? { userId } : undefined,
+          autoConnect: false,
+          reconnection: true,
+          reconnectionDelay: 1000,
+          reconnectionDelayMax: 1000,
+          reconnectionAttempts: 5,
+        });
+
+        const connectWhenReady = () => {
+          const currentUserId = useUserStore.getState().id;
+          if (!currentUserId) {
+            return false;
+          }
+          newSocket.auth = { userId: currentUserId };
+          newSocket.connect();
+          return true;
+        };
+
+        if (!connectWhenReady()) {
+          const intervalId = setInterval(() => {
+            if (connectWhenReady()) {
+              clearInterval(intervalId);
+            }
+          }, 500);
+        }
 
         // Set socket
         set({ ...state, socket: newSocket });
@@ -45,6 +64,7 @@ export const useSocketStore = create<SocketStore>((set) => ({
             setTimeout(() => {
               // Set connected state
               set({ ...state, connected: false });
+              connectWhenReady();
               newSocket.connect();
               resolve(newSocket);
             }, 1000),

@@ -3,7 +3,7 @@ import "./css/style.css";
 export const Pong = () => {
   return (
     <svg
-      className="absolute sm:top-0 top-1/2 md:top-1/3 xl:top-[10%] w-[15vw] sm:w-[20vw] 3xl:w-[15vw]   left-[40%] z-20"
+      className="absolute left-1/2 -translate-x-1/2 sm:top-0 top-1/2 md:top-1/3 xl:top-[10%] w-[15vw] sm:w-[20vw] 3xl:w-[15vw] z-20"
       viewBox="0 0 340 183"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

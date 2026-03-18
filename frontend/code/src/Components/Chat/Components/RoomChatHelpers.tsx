@@ -926,7 +926,7 @@ export const RoomSettingsModal = () => {
       <div className="modal-box bg-[#1A1C26] relative no-scrollbar w-[90%] md:w-[50%] ">
         <div className="flex flex-col">
           {TakingAction === true ? (
-            <div className="bg-black/50 absolute inset-0 w-full h-full flex flex-col items-center justify-center z-50">
+            <div className="bg-[color:var(--black)]/50 absolute inset-0 w-full h-full flex flex-col items-center justify-center z-50">
               <span className="loading loading-infinity loading-lg bg-purple-500"></span>
               <p>Processing...</p>
             </div>

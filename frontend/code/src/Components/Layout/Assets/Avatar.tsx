@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 
 import { useUserStore } from "../../../Stores/stores";
 
+const logoutUrl = `${process.env.REACT_APP_API_ENDPOINT}/auth/logout`;
+
 type AvatarProps = {
   picture: string;
 };
@@ -30,8 +32,8 @@ export const Avatar = (props: AvatarProps) => {
             <div>Profile</div>
           </li>
         </Link>
-        {process.env.REACT_APP_LOGOUT && (
-          <Link onClick={() => user.logout()} to={process.env.REACT_APP_LOGOUT}>
+        {process.env.REACT_APP_API_ENDPOINT && (
+          <Link onClick={() => user.logout()} to={logoutUrl}>
             <li className="hover:bg-primary hover:rounded-xl transform duration-500">
               <div>Logout</div>
             </li>

@@ -2,6 +2,8 @@ import { classNames } from "../../../Utils/helpers";
 import { useUserStore } from "../../../Stores/stores";
 import { Link } from "react-router-dom";
 
+const logoutUrl = `${process.env.REACT_APP_API_ENDPOINT}/auth/logout`;
+
 type OutProps = React.HTMLAttributes<HTMLDivElement> & {
   selected?: boolean;
 };
@@ -9,8 +11,8 @@ export const Out = ({ selected, className, ...props }: OutProps) => {
   const user = useUserStore();
   return (
     <>
-      {process.env?.REACT_APP_LOGOUT && (
-        <Link onClick={() => user.logout()} to={process.env.REACT_APP_LOGOUT}>
+      {process.env?.REACT_APP_API_ENDPOINT && (
+        <Link onClick={() => user.logout()} to={logoutUrl}>
           <div
             className={classNames(
               "h-9 w-9 hover:bg-secondary rounded-xl flex justify-center items-center hover:cursor-pointer",

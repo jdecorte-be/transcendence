@@ -41,7 +41,7 @@ export const Validate2Fa = () => {
               <input
                 type="text"
                 placeholder="000000"
-                className="w-[70%] text-center border border-violet-600 bg-black rounded tracking-wider leading-none py-0.5"
+                className="w-[70%] text-center border border-violet-600 bg-[var(--black)] rounded tracking-wider leading-none py-0.5"
                 maxLength={6}
                 onKeyDown={(event) => {
                   if (

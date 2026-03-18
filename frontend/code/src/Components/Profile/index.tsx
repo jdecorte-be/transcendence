@@ -32,6 +32,14 @@ import { AxiosError } from "axios";
 import { InvitationWaiting } from "../Layout/Assets/Invitationacceptance";
 import { classNames } from "../../Utils/helpers";
 type FRIENDSHIP = "none" | "friend" | "sent" | "recive" | "blocked" | undefined;
+
+const getAchievementLabel = (value?: number | null) => {
+  if (value === null || value === undefined) return "Unranked";
+  if (value >= 2) return "Ultimate";
+  if (value >= 1) return "Master";
+  return "Newbie";
+};
+
 export const Profile = () => {
   const user = useUserStore();
   const params = useParams();
@@ -39,10 +47,13 @@ export const Profile = () => {
   const [status, setStatus] = useState<FRIENDSHIP>(undefined);
   const [disabled, setDisabled] = useState("");
   const [profile, setProfile] = useState<null | any>(undefined);
+  const [avatarSrc, setAvatarSrc] = useState<string>("");
   const ChatState = useChatStore();
   const LayoutState = useModalStore();
   const socketStore = useSocketStore();
   const [onlineStatus, setOnlineStatus] = useState<string>("offline");
+  const isSelf = params.id === "me" || params.id === user.id;
+  const isLoadingProfile = !profile;
 
   const inviteWaitingModalRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -76,6 +87,20 @@ export const Profile = () => {
 
     // eslint-disable-next-line
   }, [params, user]);
+
+  useEffect(() => {
+    if (!profile) return;
+    if (profile?.picture?.large) {
+      setAvatarSrc(profile.picture.large);
+      return;
+    }
+    const first = profile?.name?.first ?? "Player";
+    const last = profile?.name?.last ?? "";
+    const fallbackName = encodeURIComponent(`${first} ${last}`.trim());
+    setAvatarSrc(
+      `https://ui-avatars.com/api/?name=${fallbackName}&background=7940CF&color=fff`,
+    );
+  }, [profile]);
 
   useEffect(() => {
     if (params.id === "me" || params.id === user.id) {
@@ -151,22 +176,40 @@ export const Profile = () => {
 
   return (
     <>
-      <div className=" flex flex-col items-center h-full bg-accent">
-        <div className="relative pt-12 h-auto max-h-[30vh] min-h-[16vh] md:min-h-[28vh] xl:min-h-[33vh] w-[85vw]">
-          <div className="relative h-full w-full md:px-32 bg-[#2b3bfb] rounded-t-3xl">
+      <div className="flex flex-col items-center h-full bg-accent">
+        <div className="relative w-full max-w-[1100px] px-4 sm:px-0 pt-10">
+          <div className="relative h-[18vh] sm:h-[22vh] md:h-[28vh] xl:h-[32vh] overflow-hidden rounded-t-3xl bg-[radial-gradient(circle_at_top,_#2b3bfb,_#1a237e_60%,_#0b1120)]">
+            <div className="absolute inset-0 opacity-30 bg-[linear-gradient(120deg,_rgba(255,255,255,0.08),_transparent_55%)]"></div>
             <img
-              className="flex-1  w-full h-auto object-scale-down md:object-top object-bottom rounded-t-3xl"
+              className="absolute inset-0 h-full w-full object-contain object-center"
               src={Hero}
               alt="bg hero"
-            ></img>
-            <div className=" absolute  bg-black top-0 left-0  object-scale-down object-top  opacity-40 h-full w-full rounded-t-3xl  z-10"></div>
+            />
+            <div className="absolute inset-0 bg-[color:var(--black)]/35"></div>
+            <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/30 blur-3xl"></div>
+            <div className="absolute -left-20 bottom-0 h-44 w-44 rounded-full bg-secondary/30 blur-3xl"></div>
             <Pong />
           </div>
 
-          <div className="avatar w-[10vw] absolute z-40 -bottom-4 sm:-bottom-6 md:-bottom-11 left-6 sm:left-12 ">
-            <div className="w-[13vw] xl:w-[8vw] rounded-full ring ring-neutral flex justify-center items-center ring-offset-base-100 ring-offset-1">
-              {profile?.picture?.large ? (
-                <img src={profile?.picture?.large} alt="profile avatar" />
+          <div className="avatar absolute z-40 -bottom-6 sm:-bottom-8 md:-bottom-10 left-6 sm:left-12">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full ring ring-neutral flex justify-center items-center ring-offset-base-100 ring-offset-1">
+              {isLoadingProfile ? (
+                <div className="w-full h-full rounded-full bg-base-300/70 animate-pulse" />
+              ) : avatarSrc ? (
+                <img
+                  src={avatarSrc}
+                  alt="profile avatar"
+                  onError={() => {
+                    const first = profile?.name?.first ?? "Player";
+                    const last = profile?.name?.last ?? "";
+                    const fallbackName = encodeURIComponent(
+                      `${first} ${last}`.trim(),
+                    );
+                    setAvatarSrc(
+                      `https://ui-avatars.com/api/?name=${fallbackName}&background=7940CF&color=fff`,
+                    );
+                  }}
+                />
               ) : (
                 <div className=" top-14">
                   <Load />
@@ -175,47 +218,81 @@ export const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="relative flex flex-row gap-y-4 sm:gap-y-0 pl-4  text-neutral font-montserrat bg-base-200  justify-between  items-start h-[15%] xl:h-[30%] xl:min-h-[27%] min-h-[25%] rounded-b-3xl w-[85vw] ">
-          <div className="flex flex-col pt-2">
-            <div className="sm:pt-12  pt-4 font-poppins font-bold text-xl ">
-              {profile?.name?.first ? (
-                <>
-                  {profile?.name?.first} {"  "} {profile.name.last}
-                </>
-              ) : (
-                <Load />
-              )}
-
-              {params.id !== "me" &&
-                params.id !== user.id &&
-                status === "friend" && (
-                  <span
-                    className={classNames(
-                      "px-2 py-1 font-light ml-2 text-xs border rounded-full",
-                      onlineStatus === "online"
-                        ? "text-green-500 border-green-500"
-                        : onlineStatus === "inGame"
-                          ? "text-yellow-500 border-yellow-500"
-                          : "text-red-500 border-red-500",
+        <div className="relative grid grid-cols-1 lg:grid-cols-[1.3fr_0.7fr] gap-4 sm:gap-6 px-4 sm:px-8 pl-24 sm:pl-28 lg:pl-8 text-neutral font-montserrat bg-base-200 justify-between items-start min-h-[25%] rounded-b-3xl w-full max-w-[1100px] pt-12 pb-6 mx-auto">
+          <div className="flex flex-col gap-4">
+            {isLoadingProfile ? (
+              <div className="flex flex-col gap-3">
+                <div className="h-5 w-32 rounded-full bg-base-300/70 animate-pulse" />
+                <div className="flex gap-2">
+                  <div className="h-7 w-20 rounded-full bg-base-300/70 animate-pulse" />
+                  <div className="h-7 w-20 rounded-full bg-base-300/70 animate-pulse" />
+                  <div className="h-7 w-24 rounded-full bg-base-300/70 animate-pulse" />
+                </div>
+                <div className="h-20 w-full max-w-2xl rounded-2xl bg-base-300/70 animate-pulse" />
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="text-lg sm:text-xl font-poppins font-bold">
+                    {profile?.name?.first} {profile.name.last}
+                  </div>
+                  {params.id !== "me" &&
+                    params.id !== user.id &&
+                    status === "friend" && (
+                      <span
+                        className={classNames(
+                          "px-2 py-1 font-light text-xs border rounded-full",
+                          onlineStatus === "online"
+                            ? "text-green-500 border-green-500"
+                            : onlineStatus === "inGame"
+                              ? "text-yellow-500 border-yellow-500"
+                              : "text-red-500 border-red-500",
+                        )}
+                      >
+                        {onlineStatus}
+                      </span>
                     )}
-                  >
-                    {onlineStatus}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 text-xs text-neutral/70">
+                  <span className="px-2 py-1 rounded-full border border-base-300/60 bg-base-100/60">
+                    @{profile?.username ?? "unknown"}
                   </span>
-                )}
-            </div>
+                  <span className="px-2 py-1 rounded-full border border-base-300/60 bg-base-100/60">
+                    {isSelf
+                      ? "You"
+                      : onlineStatus === "inGame"
+                        ? "In game"
+                        : onlineStatus}
+                  </span>
+                  <span className="px-2 py-1 rounded-full border border-base-300/60 bg-base-100/60">
+                    {getAchievementLabel(profile?.achievement)} tier
+                  </span>
+                </div>
 
-            <div className="flex flex-row  items-center  pt-2 text-xs">
-              {"@"}
-              {profile?.username}
-            </div>
+                <div className="rounded-2xl border border-base-300/50 bg-accent/70 p-4 text-sm text-neutral/90 max-w-2xl">
+                  {profile?.bio?.trim()
+                    ? profile.bio
+                    : "No bio yet. Add one from settings."}
+                </div>
+              </>
+            )}
+          </div>
 
-            <div className="flex flex-col gap-y-0 items-center h-full sm:flex-row sm:gap-x-4 justify-center sm:justify-start sm:items-end pb-4 sm:w-[25vw]">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
+              {isLoadingProfile && (
+                <div className="flex flex-col gap-3">
+                  <div className="h-10 w-full rounded-xl bg-base-300/70 animate-pulse" />
+                  <div className="h-10 w-full rounded-xl bg-base-300/70 animate-pulse" />
+                </div>
+              )}
               {params.id !== "me" &&
                 params.id !== user.id &&
                 status === "none" && (
-                  <div className=" flex items-center w-[70%] gap-x-5 h-20">
+                  <div className="flex items-center gap-3">
                     <button
-                      className={`btn w-5/6 btn-primary text-neutral ${disabled}`}
+                      className={`btn flex-1 btn-primary text-neutral ${disabled}`}
                       onClick={sendRequest}
                     >
                       <VscAdd />
@@ -259,9 +336,9 @@ export const Profile = () => {
               {params.id !== "me" &&
                 params.id !== user.id &&
                 status === "sent" && (
-                  <div className=" flex items-center w-[70%] gap-x-5 h-20 ">
+                  <div className=" flex items-center gap-3">
                     <button
-                      className={`btn w-5/6 btn-primary text-neutral ${disabled}`}
+                      className={`btn flex-1 btn-primary text-neutral ${disabled}`}
                       onClick={cancelRequest}
                     >
                       <VscChromeClose />
@@ -272,16 +349,16 @@ export const Profile = () => {
               {params.id !== "me" &&
                 params.id !== user.id &&
                 status === "recive" && (
-                  <div className=" flex items-center w-[60%] gap-x-5 h-20">
+                  <div className=" flex items-center gap-3">
                     <button
-                      className={`btn btn-square w-5/6 btn-primary text-neutral ${disabled}`}
+                      className={`btn flex-1 btn-primary text-neutral ${disabled}`}
                       onClick={acceptRequest}
                     >
                       <VscCheck />
                       <p>Accept</p>
                     </button>
                     <button
-                      className={`btn btn-square w-5/6 btn-primary text-neutral ${disabled}`}
+                      className={`btn flex-1 btn-primary text-neutral ${disabled}`}
                       onClick={rejectRequest}
                     >
                       <VscChromeClose />
@@ -292,7 +369,7 @@ export const Profile = () => {
               {params.id !== "me" &&
                 params.id !== user.id &&
                 status === "friend" && (
-                  <div className=" flex items-center w-full gap-x-5 h-20">
+                  <div className=" flex flex-col gap-3">
                     <button
                       className={`btn btn-primary text-neutral ${disabled}`}
                       onClick={async () => {
@@ -422,11 +499,11 @@ export const Profile = () => {
                     </div>
                   </div>
                 )}
-              {(params.id === "me" || params.id === user.id) && (
-                <div className=" flex items-center w-[60%] gap-x-5 h-20">
-                  <Link to={"/Settings"}>
+              {isSelf && (
+                <div className=" flex items-center gap-3">
+                  <Link to={"/Settings"} className="flex-1">
                     <button
-                      className={`btn btn-primary text-neutral ${disabled} flex-row flex-nowrap whitespace-nowrap`}
+                      className={`btn btn-primary text-neutral ${disabled} flex-row flex-nowrap whitespace-nowrap w-full`}
                     >
                       <VscEdit />
                       Edit Profile
@@ -440,7 +517,7 @@ export const Profile = () => {
                     </label>
                     <ul
                       tabIndex={0}
-                      className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 absolute bottom-16  "
+                      className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 absolute bottom-16"
                     >
                       <li
                         onClick={() =>
@@ -469,39 +546,49 @@ export const Profile = () => {
                 </div>
               )}
             </div>
-          </div>
 
-          <div className="flex h-full w-full flex-row gap-x-4 justify-center sm:justify-start items-center  sm:w-auto sm:pr-4 sm:pt-0 pt-4">
-            <img
-              className={`h-[9vh] sm:h-[11vh] md:h-[12vh] lg:h-[13vh] xl:h-[15vh] 2xl:h-[16vh] ${
-                profile?.achievement !== null && profile?.achievement >= 0
-                  ? ""
-                  : "opacity-30"
-              }`}
-              src={Newbie}
-              alt="newbie badge"
-            />
-            <img
-              className={`h-[9vh] sm:h-[11vh] md:h-[12vh] lg:h-[13vh] xl:h-[15vh] 2xl:h-[16vh] ${
-                profile?.achievement !== null && profile?.achievement >= 1
-                  ? ""
-                  : "opacity-30"
-              }`}
-              src={Master}
-              alt="Master badge"
-            />
-            <img
-              className={`h-[9vh] sm:h-[11vh] md:h-[12vh] lg:h-[13vh] xl:h-[15vh] 2xl:h-[16vh] ${
-                profile?.achievement !== null && profile?.achievement >= 2
-                  ? ""
-                  : "opacity-30"
-              }`}
-              src={Ultimate}
-              alt="Ultimate badge"
-            />
+            <div className="flex items-center gap-3 bg-accent/70 border border-base-300/50 rounded-2xl p-3 justify-center">
+              {isLoadingProfile ? (
+                <>
+                  <div className="h-16 w-16 rounded-xl bg-base-300/70 animate-pulse" />
+                  <div className="h-16 w-16 rounded-xl bg-base-300/70 animate-pulse" />
+                  <div className="h-16 w-16 rounded-xl bg-base-300/70 animate-pulse" />
+                </>
+              ) : (
+                <>
+                  <img
+                    className={`h-16 sm:h-20 ${
+                      profile?.achievement !== null && profile?.achievement >= 0
+                        ? ""
+                        : "opacity-30"
+                    }`}
+                    src={Newbie}
+                    alt="newbie badge"
+                  />
+                  <img
+                    className={`h-16 sm:h-20 ${
+                      profile?.achievement !== null && profile?.achievement >= 1
+                        ? ""
+                        : "opacity-30"
+                    }`}
+                    src={Master}
+                    alt="Master badge"
+                  />
+                  <img
+                    className={`h-16 sm:h-20 ${
+                      profile?.achievement !== null && profile?.achievement >= 2
+                        ? ""
+                        : "opacity-30"
+                    }`}
+                    src={Ultimate}
+                    alt="Ultimate badge"
+                  />
+                </>
+              )}
+            </div>
           </div>
         </div>
-        <div className="relative flex w-[85vw] justify-center h-auto overflow-">
+        <div className="relative flex w-full max-w-[1100px] justify-center h-auto overflow-hidden px-4 sm:px-0">
           <History props={params.id} />
         </div>
       </div>
