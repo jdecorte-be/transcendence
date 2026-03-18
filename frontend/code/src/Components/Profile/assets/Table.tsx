@@ -58,31 +58,26 @@ export const Table = (props: any) => {
   const offset = useRef(0);
   const { id }: any = useParams();
   const skeletonRows = Array.from({ length: 3 }, (_, index) => (
-    <tr
+    <div
       key={`skeleton-${index}`}
-      className="bg-accent border border-base-300/60 grow-0 rounded-2xl w-11/12 flex justify-between px-3 md:px-6 items-center h-16 md:h-20"
+      className="bg-accent border border-base-300/60 rounded-2xl w-full px-4 py-4 sm:px-6 sm:py-5 flex flex-col gap-3"
     >
-      <td className="hidden md:w-28 md:flex md:justify-start">
+      <div className="flex items-center justify-between text-xs text-neutral/60">
         <div className="h-3 w-20 rounded-full bg-base-300/60 animate-pulse" />
-      </td>
-      <td className="flex justify-center items-center grow w-auto">
-        <div className="flex justify-center items-center gap-x-3 md:gap-x-6 w-full overflow-hidden">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-base-300/60 animate-pulse" />
-            <div className="h-4 w-20 md:w-28 rounded-full bg-base-300/60 animate-pulse" />
-          </div>
-          <div className="h-6 w-16 md:w-20 rounded-full bg-base-300/60 animate-pulse" />
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-base-300/60 animate-pulse" />
-            <div className="h-4 w-20 md:w-28 rounded-full bg-base-300/60 animate-pulse" />
-          </div>
+        <div className="h-4 w-12 rounded-full bg-base-300/60 animate-pulse" />
+      </div>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="h-10 w-10 rounded-xl bg-base-300/60 animate-pulse" />
+          <div className="h-4 w-24 rounded-full bg-base-300/60 animate-pulse" />
         </div>
-      </td>
-      <td className="flex px-1 grow-0 justify-end items-center gap-x-2 w-20">
-        <div className="h-5 w-12 rounded-full bg-base-300/60 animate-pulse" />
-        <div className="h-4 w-6 rounded-full bg-base-300/60 animate-pulse" />
-      </td>
-    </tr>
+        <div className="h-7 w-20 rounded-full bg-base-300/60 animate-pulse" />
+        <div className="flex items-center gap-2 min-w-0 justify-end">
+          <div className="h-10 w-10 rounded-xl bg-base-300/60 animate-pulse" />
+          <div className="h-4 w-24 rounded-full bg-base-300/60 animate-pulse" />
+        </div>
+      </div>
+    </div>
   ));
   const fetchData = async () => {
     try {
@@ -109,109 +104,102 @@ export const Table = (props: any) => {
 
   return history.length > 0 || loading === true ? (
     <div className="w-full h-full overflow-auto pb-6">
-      <div className="hidden md:flex items-center justify-between px-6 pb-2 text-xs text-neutral/60">
-        <span className="w-28">Date</span>
+      <div className="hidden md:flex items-center justify-between px-2 sm:px-4 pb-2 text-xs text-neutral/60">
+        <span className="w-32">Date</span>
         <span className="flex-1 text-center">Players</span>
-        <span className="w-20 text-right">Result</span>
+        <span className="w-24 text-right">Result</span>
       </div>
       <InfiniteScroll
         hasMore={hasMore}
         loader={
-          <div className="flex items-center w-full h-full justify-center">
+          <div className="flex items-center w-full h-full justify-center py-6">
             <Logo className="sm:w-16 w-16" />
           </div>
         }
         dataLength={history.length}
         next={fetchData}
-        className="overflow-auto pb-4"
+        className="overflow-auto pb-4 space-y-3 px-2 sm:px-4"
         scrollableTarget="scrollTarget"
         endMessage={
-          <span className="flex justify-center items-center p-8 text-neutral font-montserrat">
+          <span className="flex justify-center items-center p-6 text-neutral font-montserrat">
             No more history
           </span>
         }
       >
-        <table className="table w-full ">
-          <tbody className="flex flex-col justify-start items-center gap-y-2 md:gap-y-3">
-            {!loading &&
-              history.map((x: any, index: number) => (
-                <tr
-                  key={index}
-                  className="bg-accent border border-base-300/60 grow-0 rounded-2xl w-11/12 flex justify-between px-3 md:px-6 items-center h-16 md:h-20"
-                >
-                  <td className="hidden md:w-28 md:flex md:justify-start">
-                    <div className="flex justify-start items-center font-poppins text-xs text-neutral/70">
-                      {formatTime(x.match.createdAt)}
-                    </div>
-                  </td>
-                  <td className="flex justify-center items-center grow w-auto">
-                    <div className="flex justify-center items-center gap-x-3 md:gap-x-6 w-full overflow-hidden">
-                      {x?.match?.Player1?.username ? (
-                        <div className="flex items-center gap-2 min-w-0">
-                          <Link to={`/Profile/${x.match.Player1.id}`}>
-                            <img
-                              className="rounded-xl h-8 w-8 md:h-10 md:w-10"
-                              src={x.match.Player1.avatar.medium}
-                              alt="Avatar"
-                            />
-                          </Link>
-                          <span className="text-xs md:text-sm font-poppins font-medium text-neutral truncate max-w-[80px] md:max-w-[120px]">
-                            {x.match.Player1.username}
-                          </span>
-                        </div>
-                      ) : (
-                        <Loading props={"sm"} />
-                      )}
-
-                      <div className="flex flex-row items-center gap-x-1 justify-center w-16 md:w-20 h-6 rounded-full bg-base-100/70 text-neutral font-poppins text-xs">
-                        <span className="font-poppins font-medium">
-                          {x.match.Player1.score}
+        {!loading &&
+          history.map((x: any, index: number) => {
+            const result = getResultLabel(x, id);
+            const resultClass =
+              result === "Win"
+                ? "text-lime-400 border-lime-400/40 bg-lime-400/10"
+                : result === "Loss"
+                  ? "text-red-400 border-red-400/40 bg-red-400/10"
+                  : "text-neutral/70 border-base-300/60 bg-base-100/60";
+            return (
+              <div
+                key={index}
+                className="bg-accent border border-base-300/60 rounded-2xl w-full px-4 py-4 sm:px-6 sm:py-5 flex flex-col gap-3"
+              >
+                <div className="flex items-center justify-between text-xs text-neutral/70">
+                  <span className="font-poppins">{formatTime(x.match.createdAt)}</span>
+                  <div className={`px-3 py-1 rounded-full border text-[11px] font-semibold ${resultClass}`}>
+                    {result}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 justify-between">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    {x?.match?.Player1?.username ? (
+                      <>
+                        <Link to={`/Profile/${x.match.Player1.id}`} className="shrink-0">
+                          <img
+                            className="rounded-xl h-10 w-10 sm:h-11 sm:w-11"
+                            src={x.match.Player1.avatar.medium}
+                            alt="Avatar"
+                          />
+                        </Link>
+                        <span className="text-sm font-poppins font-medium text-neutral truncate max-w-[110px] sm:max-w-[140px]">
+                          {x.match.Player1.username}
                         </span>
-                        <span className="font-poppins font-medium">:</span>
-                        <span className="font-poppins font-medium">
-                          {x.match.Player2.score}
-                        </span>
-                      </div>
+                      </>
+                    ) : (
+                      <Loading props={"sm"} />
+                    )}
+                  </div>
 
-                      {x?.match?.Player2?.id ? (
-                        <div className="flex items-center gap-2 min-w-0">
-                          <Link to={`/Profile/${x.match.Player2.id}`}>
-                            <img
-                              className="rounded-xl h-8 w-8 md:h-10 md:w-10"
-                              src={x.match.Player2.avatar.medium}
-                              alt="Avatar"
-                            />
-                          </Link>
-                          <span className="text-xs md:text-sm font-poppins font-medium text-neutral truncate max-w-[80px] md:max-w-[120px]">
-                            {x.match.Player2.username}
-                          </span>
-                        </div>
-                      ) : (
-                        <Loading props={"lg"} />
-                      )}
+                  <div className="flex flex-col items-center justify-center px-3">
+                    <div className="flex flex-row items-center gap-x-2 justify-center px-3 py-1 rounded-full bg-base-100/70 text-neutral font-poppins text-sm font-semibold">
+                      <span>{x.match.Player1.score}</span>
+                      <span>:</span>
+                      <span>{x.match.Player2.score}</span>
                     </div>
-                  </td>
-                  <td className="flex px-1 grow-0 justify-end items-center gap-x-2 w-20">
-                    <span
-                      className={`text-xs font-semibold px-2 py-1 rounded-full border ${
-                        getResultLabel(x, id) === "Win"
-                          ? "text-lime-400 border-lime-400/40"
-                          : getResultLabel(x, id) === "Loss"
-                            ? "text-red-400 border-red-400/40"
-                            : "text-neutral/60 border-base-300/60"
-                      }`}
-                    >
-                      {getResultLabel(x, id)}
-                    </span>
-                    <div className={`text-xs ${getColor(x.match.Player1, x.match.Player2, id)}`}>
+                    <div className={`text-xs font-semibold mt-1 ${getColor(x.match.Player1, x.match.Player2, id)}`}>
                       {scoreHandler(x, id)}
                     </div>
-                  </td>
-                </tr>
-              ))}
-            {loading && skeletonRows}
-          </tbody>
-        </table>
+                  </div>
+
+                  <div className="flex items-center gap-2 min-w-0 flex-1 justify-end text-right">
+                    {x?.match?.Player2?.id ? (
+                      <>
+                        <span className="text-sm font-poppins font-medium text-neutral truncate max-w-[110px] sm:max-w-[140px]">
+                          {x.match.Player2.username}
+                        </span>
+                        <Link to={`/Profile/${x.match.Player2.id}`} className="shrink-0">
+                          <img
+                            className="rounded-xl h-10 w-10 sm:h-11 sm:w-11"
+                            src={x.match.Player2.avatar.medium}
+                            alt="Avatar"
+                          />
+                        </Link>
+                      </>
+                    ) : (
+                      <Loading props={"lg"} />
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        {loading && skeletonRows}
       </InfiniteScroll>
     </div>
   ) : (
