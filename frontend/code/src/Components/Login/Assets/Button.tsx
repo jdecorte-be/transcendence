@@ -1,14 +1,14 @@
 export const Button = () => {
   return (
     <svg
-      className="w-80 hover:fill-slate-500 transition duration-500 hover:-translate-y-1 hover:scale-110 ease-in-out"
+      className="w-80 transition duration-500 hover:-translate-y-1 hover:scale-[1.02] ease-in-out"
       width="330"
       height="81"
       viewBox="0 0 330 81"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect className="" width="330" height="81" rx="13" fill="#8C67F6" />
+      <rect className="" width="330" height="81" rx="13" fill="#7C5CFA" />
       <g clipPath="url(#clip0_1_36)">
         <path
           d="M63 51.9565H85.1076V63H96.1395V43.0435H74.0756L96.1395 21H85.1076L63 43.0435V51.9565Z"

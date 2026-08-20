@@ -158,6 +158,13 @@ export class MessagesService {
         userId,
         roomId: channelId,
       },
+      include: {
+        room: {
+          select: {
+            type: true,
+          },
+        },
+      },
     });
 
     if (!roomMember) {
@@ -193,17 +200,7 @@ export class MessagesService {
       take: limit,
     });
 
-    // get room type of room
-    const room = await this.prisma.room.findUnique({
-      where: {
-        id: channelId,
-      },
-      select: {
-        type: true,
-      },
-    });
-
-    if (room.type === 'dm') {
+    if (roomMember.room.type === 'dm') {
       const blocked = await this.prisma.blockedUsers.findFirst({
         where: {
           dmRoomId: channelId,

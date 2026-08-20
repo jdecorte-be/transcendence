@@ -101,9 +101,13 @@ export const RecentConversations = () => {
       <OnlineNowUsers />
       {ChatRoomsState.recentDms.length > 0 ? (
         <div className="flex-grow overflow-y-auto no-scrollbar bg-[#1A1C26]">
-          {ChatRoomsState.recentDms.map((friend) => (
-            <ChatPlaceHolder
+          {ChatRoomsState.recentDms.map((friend, index) => (
+            <div
               key={friend.id}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+            >
+            <ChatPlaceHolder
               bio={friend?.bio}
               secondUserId={friend.secondUserId}
               id={friend.id}
@@ -114,6 +118,7 @@ export const RecentConversations = () => {
               isRead={true}
               userImage={friend.avatar.medium}
             />
+            </div>
           ))}
           {!EndOfFetching && (
             <div
@@ -193,13 +198,13 @@ export const ChatPlaceHolder = ({
           },
         });
       }}
-      className={`message-container flex   px-4 py-5  hover:bg-[#272932] items-center  ${
+      className={`message-container flex   px-4 py-5 transition-colors duration-200 hover:bg-[#272932] items-center  ${
         selectedChatID === id ? "bg-[#272932]" : "bg-[#1A1C26]"
       }`}
     >
       <div className="user-image flex-shrink-0 mr-2">
         <img
-          className="user-image h-10 w-10 rounded-full"
+          className="user-image h-10 w-10 rounded-full transition-transform duration-200 hover:scale-110"
           src={userImage}
           alt={`second's Profile`}
         />
@@ -298,18 +303,20 @@ export const OnlineNowUsers = () => {
           </p>
 
           <div className="icons-row flex flex-row items-center gap-2">
-            <a
-              href="#create-room-modal"
+            <button
+              type="button"
+              aria-label="Create room"
               onClick={() => modalState.setShowCreateChatRoomModal(true)}
             >
               <img className="w-[80%]" alt="" src={GroupChat} />
-            </a>
-            <a
-              href="#explorer-modal"
+            </button>
+            <button
+              type="button"
+              aria-label="Explore rooms"
               onClick={() => modalState.setShowExploreModal(true)}
             >
               <img className="w-[100%]" alt="" src={Explore} />
-            </a>
+            </button>
           </div>
         </div>
         <div className="Message-Type-Buttons flex flex-row pt-2 pb-2 justify-between ">
@@ -323,7 +330,7 @@ export const OnlineNowUsers = () => {
               <p className="text-gray-300 font-poppins text-base font-medium leading-normal pr-3 hidden md:block ">
                 Chat
               </p>
-              <img alt="chat" src={ChatIcon}></img>
+              <img alt="" src={ChatIcon}></img>
             </div>
           </button>
           <button
@@ -336,7 +343,7 @@ export const OnlineNowUsers = () => {
               <p className="text-gray-300 font-poppins text-base font-medium leading-normal pr-3 hidden md:block">
                 Rooms
               </p>
-              <img alt="chat" src={RoomsIcon}></img>
+              <img alt="" src={RoomsIcon}></img>
             </div>
           </button>
         </div>

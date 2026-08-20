@@ -74,16 +74,19 @@ export const Modal = () => {
 
   return (
     <>
-      <div className={`modal ${opacity}`}>
-        <div className="modal-box">
+      <div className={`modal transition-opacity duration-500 ease-in-out ${opacity}`}>
+        <div className="modal-box border border-base-300 animate-scale-in">
           <h3 className="text-lg font-bold">Game Starting .... </h3>
-          <p className="py-4 flex items-center justify-center text-xl font-poppins font-bold">
+          <p
+            key={timer}
+            className="py-4 flex items-center justify-center text-xl font-poppins font-bold animate-scale-in"
+          >
             Game Start In {timer}
           </p>
         </div>
       </div>
-      <div className={`modal ${resOpacity}`}>
-        <div className="modal-box">
+      <div className={`modal transition-opacity duration-500 ease-in-out ${resOpacity}`}>
+        <div className="modal-box border border-base-300 animate-scale-in">
           <h3 className="text-lg font-bold">You {status}</h3>
           <p className="py-4 flex items-center justify-center text-xl font-poppins font-bold">
             {result}{" "}

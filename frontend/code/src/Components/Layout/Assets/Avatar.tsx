@@ -20,21 +20,21 @@ export const Avatar = (props: AvatarProps) => {
       </div>
       <ul
         tabIndex={0}
-        className="dropdown-content z-50 right-0 top-14 menu p-2 shadow bg-base-200 rounded-box w-52"
+        className="dropdown-content z-50 right-0 top-14 menu p-2 shadow bg-base-200 border border-base-300 rounded-box w-52"
       >
         <Link to={"Settings"}>
-          <li className="hover:bg-primary hover:rounded-xl transform duration-500">
+          <li className="hover:bg-primary/10 hover:rounded-xl transition-colors">
             <div>Settings</div>
           </li>
         </Link>
         <Link to={`Profile/${user.id}`}>
-          <li className="hover:bg-primary hover:rounded-xl transform duration-500">
+          <li className="hover:bg-primary/10 hover:rounded-xl transition-colors">
             <div>Profile</div>
           </li>
         </Link>
         {process.env.REACT_APP_API_ENDPOINT && (
           <Link onClick={() => user.logout()} to={logoutUrl}>
-            <li className="hover:bg-primary hover:rounded-xl transform duration-500">
+            <li className="hover:bg-primary/10 hover:rounded-xl transition-colors">
               <div>Logout</div>
             </li>
           </Link>

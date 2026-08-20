@@ -5,8 +5,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useChatStore } from "../Controllers/RoomChatControllers";
 import { getDM } from "../Services/ChatServices";
+import { useDocumentTitle } from "../../../Utils/helpers";
 
 export const UserToUserChat = () => {
+  useDocumentTitle("Chat");
   const params = useParams();
   const navigator = useNavigate();
 

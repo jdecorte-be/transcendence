@@ -4,7 +4,17 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class LeaderBoardService {
   constructor(private prisma: PrismaService) {}
+
+  private cache = new Map<string, { data: unknown; expiresAt: number }>();
+  private readonly TTL_MS = 30_000;
+
   async getLeaderBoard(offset: number, limit: number) {
+    const cacheKey = `${offset}:${limit}`;
+    const cached = this.cache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data;
+    }
+
     const leaderboard = await this.prisma.match.groupBy({
       skip: offset,
       take: limit,
@@ -16,24 +26,28 @@ export class LeaderBoardService {
         },
       },
     });
-    const leaderboardsPromises = leaderboard.map(async (user) => {
-      const lead = await this.prisma.user.findUnique({
-        where: {
-          userId: user.winner_id,
-        },
-        select: {
-          Username: true,
-          firstName: true,
-          lastName: true,
-          avatar: true,
-          userId: true,
-        },
-      });
-      return {
-        ...lead,
-        wins: user._count.id,
-      };
+
+    const winnerIds = leaderboard
+      .map((entry) => entry.winner_id)
+      .filter((id): id is string => id !== null);
+    const users = await this.prisma.user.findMany({
+      where: { userId: { in: winnerIds } },
+      select: {
+        Username: true,
+        firstName: true,
+        lastName: true,
+        avatar: true,
+        userId: true,
+      },
     });
-    return await Promise.all(leaderboardsPromises);
+    const usersById = new Map(users.map((user) => [user.userId, user]));
+
+    const data = leaderboard.map((entry) => ({
+      ...usersById.get(entry.winner_id),
+      wins: entry._count.id,
+    }));
+
+    this.cache.set(cacheKey, { data, expiresAt: Date.now() + this.TTL_MS });
+    return data;
   }
 }

@@ -56,6 +56,7 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
   const socketStore = useSocketStore();
   const invitationGameRef = useRef<HTMLDialogElement>(null);
   const path: string = useCurrentPath();
+  const location = useLocation();
   const isPlayRoute = path === "Play" || path === "Play/Bot";
 
   const modalState = useModalStore();
@@ -121,7 +122,7 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
           }`}
         >
           <Modal />
-          <div className="flex flex-row w-full h-16 min-h-16 bg-base-200">
+          <header className="flex flex-row w-full h-16 min-h-16 bg-base-200 border-b border-base-300">
             <div className="flex justify-start items-center z-50 h-full w-full">
               <ShowLogoModal />
               {modalState.showBlockedListModal && <BlockedUsersModal />}
@@ -133,9 +134,12 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
               <Alert />
               <Avatar picture={`${user?.picture?.medium}`} />
             </div>
-          </div>
+          </header>
           <div className="flex bg-base-200 h-[calc(100vh-4rem)]">
-            <div className="sm:flex flex-col hidden justify-around items-stretch h-full bg-base-200 md:pt-20 w-20 min-w-[5.5rem] max-w-[6rem]">
+            <nav
+              aria-label="Primary"
+              className="sm:flex flex-col hidden justify-around items-stretch h-full bg-base-200 border-r border-base-300 md:pt-20 w-20 min-w-[5.5rem] max-w-[6rem]"
+            >
               <div className="flex flex-col justify-evenly content-start gap-y-10 pb-44">
                 <Dash selected={path === "Home"} className="mx-auto" />
                 <Game selected={isPlayRoute} className="mx-auto" />
@@ -149,30 +153,25 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
               <div className="flex flex-col justify-start">
                 <Out className="mx-auto" />
               </div>
-            </div>
-            <div className=" h-[8vh] fixed bottom-0 sm:hidden btm-nav bg-base-200 flex justify-end z-50">
-              <button className="">
-                <Dash selected={path === "Home"} />
-              </button>
-              <button className="">
-                <Game selected={isPlayRoute} />
-              </button>
-              <button className="">
-                <Message selected={path === "Chat"} />
-              </button>
-              <button className="">
-                <Profile selected={path === "Profile/:id"} />
-              </button>
-              <button className="">
-                <Settings selected={path === "Settings"} />
-              </button>
-            </div>
-            <div
+            </nav>
+            <nav
+              aria-label="Mobile"
+              className=" h-[8vh] fixed bottom-0 sm:hidden btm-nav bg-base-200 border-t border-base-300 flex justify-end z-50"
+            >
+              <Dash selected={path === "Home"} />
+              <Game selected={isPlayRoute} />
+              <Message selected={path === "Chat"} />
+              <Profile selected={path === "Profile/:id"} />
+              <Settings selected={path === "Settings"} />
+            </nav>
+            <main
               className="flex-1 min-w-0 w-full z-10 h-full bg-accent sm:rounded-tl-2xl overflow-auto no-scrollbar"
               id="scrollTarget"
             >
-              <Outlet />
-            </div>
+              <div key={location.pathname} className="animate-fade-in">
+                <Outlet />
+              </div>
+            </main>
           </div>
         </div>
       )}

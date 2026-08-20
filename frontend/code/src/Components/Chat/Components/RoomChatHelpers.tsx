@@ -36,7 +36,7 @@ import { formatTime } from "./tools/utils";
 import { getBlockedCall, unblockCall } from "../Services/FriendsServices";
 import { useSocketStore } from "../Services/SocketsServices";
 import { useInView } from "react-intersection-observer";
-import { classNames } from "../../../Utils/helpers";
+import { classNames, onEnterOrSpace } from "../../../Utils/helpers";
 import { OnlineNowUsers } from "./RecentChat";
 
 interface NullComponentProps {
@@ -1023,156 +1023,172 @@ export const RoomSettingsModal = () => {
               <div className="">
                 {currentUsers
                   .filter((user) => user.id !== currentUser.id)
-                  .map((user) => (
-                    <div
-                      key={user.id}
-                      className="flex flex-row justify-between  bg-[#1A1C26] p-3 border-gray-600 "
-                    >
-                      <div className="flex flex-row items-center space-x-3">
-                        <div className="pr-1">
-                          <img
-                            className="w-12 rounded-full "
-                            alt=""
-                            src={user.avatar.medium}
-                          />
+                  .map((user) => {
+                    const handleBanToggle = () => {
+                      if (user.isBaned) {
+                        socketStore.socket?.emit("unban", {
+                          roomId: chatState.selectedChatID,
+                          memberId: user.id,
+                        });
+                      } else {
+                        socketStore.socket?.emit("roomDeparture", {
+                          roomId: chatState.selectedChatID,
+                          memberId: user.id,
+                        });
+                      }
+
+                      setTakeAction(true);
+                      takeActionCall(
+                        selectedChatID as string,
+                        user.id,
+                        user.isBaned ? "unban" : "ban",
+                      ).then((res) => {
+                        setTakeAction(false);
+                        if (res?.status === 200 || res?.status === 201) {
+                          toast.success(res.data.message);
+                        }
+
+                        fetchData();
+                      });
+                    };
+
+                    const handleMute = async () => {
+                      setTakeAction(true);
+                      await takeActionCall(
+                        selectedChatID as string,
+                        user.id,
+                        "mute",
+                      ).then((res) => {
+                        setTakeAction(false);
+                        if (res?.status === 200 || res?.status === 201) {
+                          toast.success(
+                            "User Muted For a 5 minutes Successfully",
+                          );
+                        }
+
+                        fetchData();
+                      });
+                    };
+
+                    const handleKick = async () => {
+                      setTakeAction(true);
+                      await takeActionCall(
+                        selectedChatID as string,
+                        user.id,
+                        "kick",
+                      ).then((res) => {
+                        setTakeAction(false);
+                        if (res?.status === 200 || res?.status === 201) {
+                          toast.success("User Kicked Successfully");
+                          socketStore.socket?.emit("roomDeparture", {
+                            roomId: chatState.selectedChatID,
+                            memberId: user.id,
+                            type: "kick",
+                          });
+                        }
+                        fetchData();
+                      });
+                    };
+
+                    const handleSetAdmin = async () => {
+                      setTakeAction(true);
+                      await takeActionCall(
+                        selectedChatID as string,
+                        user.id,
+                        "setAdmin",
+                      ).then((res) => {
+                        setTakeAction(false);
+                        if (res?.status === 200 || res?.status === 201) {
+                          toast.success(
+                            "User have been set as Admin Successfully",
+                          );
+                        }
+                      });
+                    };
+
+                    return (
+                      <div
+                        key={user.id}
+                        className="flex flex-row justify-between  bg-[#1A1C26] p-3 border-gray-600 "
+                      >
+                        <div className="flex flex-row items-center space-x-3">
+                          <div className="pr-1">
+                            <img
+                              className="w-12 rounded-full "
+                              alt=""
+                              src={user.avatar.medium}
+                            />
+                          </div>
+
+                          <p className="text-white font-poppins text-base font-medium leading-normal">
+                            {user?.firstname ?? "user"}
+                          </p>
                         </div>
 
-                        <p className="text-white font-poppins text-base font-medium leading-normal">
-                          {user?.firstname ?? "user"}
-                        </p>
-                      </div>
-
-                      <div
-                        className="dropdown top-0 z-100"
-                        style={{ position: "initial" }}
-                      >
-                        <label tabIndex={0} className="">
-                          <summary className="list-none p-3 cursor-pointer ">
-                            <img src={More} alt="More" />
-                          </summary>
-                        </label>
-                        <ul
-                          tabIndex={0}
-                          className="p-2  z-101 absolute right-5 bottom-44 shadow menu dropdown-content bg-base-100 rounded-box w-40"
+                        <div
+                          className="dropdown top-0 z-100"
+                          style={{ position: "initial" }}
                         >
-                          <li
-                            onClick={() => {
-                              if (user.isBaned) {
-                                socketStore.socket?.emit("unban", {
-                                  roomId: chatState.selectedChatID,
-                                  memberId: user.id,
-                                });
-                              } else {
-                                socketStore.socket?.emit("roomDeparture", {
-                                  roomId: chatState.selectedChatID,
-                                  memberId: user.id,
-                                });
-                              }
-
-                              setTakeAction(true);
-                              takeActionCall(
-                                selectedChatID as string,
-                                user.id,
-                                user.isBaned ? "unban" : "ban",
-                              ).then((res) => {
-                                setTakeAction(false);
-                                if (
-                                  res?.status === 200 ||
-                                  res?.status === 201
-                                ) {
-                                  toast.success(res.data.message);
-                                }
-
-                                fetchData();
-                              });
-                            }}
+                          <label
+                            tabIndex={0}
+                            className=""
+                            aria-label="More options"
                           >
-                            <span className="hover:bg-[#7940CF]">
-                              {user.isBaned ? "UnBan" : "Ban"}
-                            </span>
-                          </li>
-
-                          {user.isMuted === false && (
+                            <div className="list-none p-3 cursor-pointer ">
+                              <img src={More} alt="" />
+                            </div>
+                          </label>
+                          <ul
+                            tabIndex={0}
+                            className="p-2  z-101 absolute right-5 bottom-44 shadow menu dropdown-content bg-base-100 rounded-box w-40"
+                          >
                             <li
-                              onClick={async () => {
-                                setTakeAction(true);
-                                await takeActionCall(
-                                  selectedChatID as string,
-                                  user.id,
-                                  "mute",
-                                ).then((res) => {
-                                  setTakeAction(false);
-                                  if (
-                                    res?.status === 200 ||
-                                    res?.status === 201
-                                  ) {
-                                    toast.success(
-                                      "User Muted For a 5 minutes Successfully",
-                                    );
-                                  }
-
-                                  fetchData();
-                                });
-                              }}
+                              role="button"
+                              tabIndex={0}
+                              onClick={handleBanToggle}
+                              onKeyDown={onEnterOrSpace(handleBanToggle)}
                             >
-                              <span className="hover:bg-[#7940CF]">mute</span>
+                              <span className="hover:bg-[#7940CF]">
+                                {user.isBaned ? "UnBan" : "Ban"}
+                              </span>
                             </li>
-                          )}
 
-                          <li
-                            onClick={async () => {
-                              setTakeAction(true);
-                              await takeActionCall(
-                                selectedChatID as string,
-                                user.id,
-                                "kick",
-                              ).then((res) => {
-                                setTakeAction(false);
-                                if (
-                                  res?.status === 200 ||
-                                  res?.status === 201
-                                ) {
-                                  toast.success("User Kicked Successfully");
-                                  socketStore.socket?.emit("roomDeparture", {
-                                    roomId: chatState.selectedChatID,
-                                    memberId: user.id,
-                                    type: "kick",
-                                  });
-                                }
-                                fetchData();
-                              });
-                            }}
-                          >
-                            <span className="hover:bg-[#7940CF]">kick</span>
-                          </li>
-                          <li
-                            onClick={async () => {
-                              setTakeAction(true);
-                              await takeActionCall(
-                                selectedChatID as string,
-                                user.id,
-                                "setAdmin",
-                              ).then((res) => {
-                                setTakeAction(false);
-                                if (
-                                  res?.status === 200 ||
-                                  res?.status === 201
-                                ) {
-                                  toast.success(
-                                    "User have been set as Admin Successfully",
-                                  );
-                                }
-                              });
-                            }}
-                          >
-                            <span className="hover:bg-[#7940CF]">
-                              Set as admin
-                            </span>
-                          </li>
-                        </ul>
+                            {user.isMuted === false && (
+                              <li
+                                role="button"
+                                tabIndex={0}
+                                onClick={handleMute}
+                                onKeyDown={onEnterOrSpace(handleMute)}
+                              >
+                                <span className="hover:bg-[#7940CF]">
+                                  mute
+                                </span>
+                              </li>
+                            )}
+
+                            <li
+                              role="button"
+                              tabIndex={0}
+                              onClick={handleKick}
+                              onKeyDown={onEnterOrSpace(handleKick)}
+                            >
+                              <span className="hover:bg-[#7940CF]">kick</span>
+                            </li>
+                            <li
+                              role="button"
+                              tabIndex={0}
+                              onClick={handleSetAdmin}
+                              onKeyDown={onEnterOrSpace(handleSetAdmin)}
+                            >
+                              <span className="hover:bg-[#7940CF]">
+                                Set as admin
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
               </div>
             </div>
           )}
@@ -1180,11 +1196,9 @@ export const RoomSettingsModal = () => {
           <div className="flex fex row justify-between items-baseline">
             <div className="">
               {currentRoom?.isOwner && (
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-
+                <button
+                  type="button"
+                  onClick={() => {
                     setIsLoading(true);
                     DeleteRoomCall(selectedChatID as string).then((res) => {
                       setIsLoading(false);
@@ -1198,20 +1212,17 @@ export const RoomSettingsModal = () => {
                   className="btn hover:bg-red-500  "
                 >
                   Delete Room
-                </a>
+                </button>
               )}
             </div>
             <div className="modal-action">
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  resetModalState();
-                }}
+              <button
+                type="button"
+                onClick={resetModalState}
                 className="btn hover:bg-purple-500"
               >
                 Close
-              </a>
+              </button>
               {IsUpdated === true && (
                 <a
                   href="#"
@@ -1496,7 +1507,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 export const NullPlaceHolder: React.FC<NullComponentProps> = ({ message }) => {
   return (
     <div className="null image flex flex-col justify-center items-center h-full">
-      <img alt="null" className="w-[35%] bottom-2 max-w-xs" src={NullImage} />
+      <img alt="" className="w-[35%] bottom-2 max-w-xs" src={NullImage} />
       <p className="text-gray-500 font-montserrat text-18 font-semibold leading-28 p-3">
         {message}
       </p>
@@ -1508,7 +1519,7 @@ export const ChatPlaceHolder: React.FC<NullComponentProps> = ({ message }) => {
   return (
     <div className="null image flex flex-col justify-center items-center h-full">
       <img
-        alt="null"
+        alt=""
         className="w-[35%] bottom-2 opacity-40 max-w-xs"
         src={ChatGif}
       />
@@ -1616,7 +1627,7 @@ export const InitChatPlaceholder = () => {
   return (
     <div className="null image flex flex-col justify-center items-center h-full">
       <img
-        alt="null"
+        alt=""
         className="w-[30%] bottom-2 opacity-30 max-w-xs"
         src={InitChat}
       />

@@ -28,7 +28,7 @@ import { blockUserCall } from "../Services/FriendsServices";
 import { InvitationWaiting } from "../../Layout/Assets/Invitationacceptance";
 
 import { useInView } from "react-intersection-observer";
-import { classNames } from "../../../Utils/helpers";
+import { classNames, onEnterOrSpace } from "../../../Utils/helpers";
 
 export interface ChatPaceHolderProps {
   username: string;
@@ -135,6 +135,66 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
     setIsModalOpen(false);
   };
 
+  const handleBlock = () => {
+    ChatState.setIsLoading(true);
+    blockUserCall(currentUser?.secondUserId).then((res) => {
+      ChatState.setIsLoading(false);
+      if (res?.status === 200 || res?.status === 201) {
+        toast.success("User Blocked");
+      } else {
+        toast.error("Could Not Block User");
+      }
+    });
+  };
+
+  const handleInviteToGame = () => {
+    socketStore?.socket?.emit(
+      "inviteToGame",
+      {
+        inviterId: user.id,
+        opponentId: currentUser.secondUserId,
+        gameMode: "classic",
+      },
+      (data: { error: string | null; gameId: string }) => {
+        if (data.error) {
+          toast.error(data.error);
+          return;
+        }
+        user.setGameWaitingId(data.gameId);
+        inviteWaitingModalRef.current?.showModal();
+      },
+    );
+  };
+
+  const handleToggleUserInfo = () => {
+    LayoutState.setShowPreviewCard(!LayoutState.showPreviewCard);
+    onRemoveUserPreview();
+  };
+
+  const handleOpenRoomSettings = () => {
+    LayoutState.setShowSettingsModal(true);
+  };
+
+  const handleOpenAddUsers = () => {
+    LayoutState.setShowAddUsersModal(true);
+  };
+
+  const handleToggleRoomInfo = () => {
+    LayoutState.setShowPreviewCard(!LayoutState.showPreviewCard);
+    onRemoveUserPreview();
+  };
+
+  const handleLeaveRoom = () => {
+    ChatState.setIsLoading(true);
+    leaveRoomCall(currentRoom?.id as string).then((res) => {
+      ChatState.setIsLoading(false);
+      if (res?.status === 200 || res?.status === 201) {
+        toast.success("Room Left Successfully");
+        ChatState.deleteRoom(currentRoom?.id as string);
+      }
+    });
+  };
+
   useEffect(() => {
     SetOnline(false);
 
@@ -160,6 +220,7 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
 
           <button
             className="pr-1"
+            aria-label="View profile"
             onClick={() => {
               if (ChatState.selectedChatType === ChatType.Chat) {
                 navigate(`/profile/${currentUser.secondUserId}`);
@@ -201,58 +262,37 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
         </div>
         {selectedChatType === ChatType.Chat ? (
           <div className="dropdown">
-            <label tabIndex={0} className="">
-              <summary className="list-none p-3 cursor-pointer ">
-                <img src={More} alt="More" />
-              </summary>
+            <label tabIndex={0} className="" aria-label="More options">
+              <div className="list-none p-3 cursor-pointer ">
+                <img src={More} alt="" />
+              </div>
             </label>
             <ul
               tabIndex={0}
               className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 absolute right-full"
             >
               <li
-                onClick={() => {
-                  ChatState.setIsLoading(true);
-                  blockUserCall(currentUser?.secondUserId).then((res) => {
-                    ChatState.setIsLoading(false);
-                    if (res?.status === 200 || res?.status === 201) {
-                      toast.success("User Blocked");
-                    } else {
-                      toast.error("Could Not Block User");
-                    }
-                  });
-                }}
+                role="button"
+                tabIndex={0}
+                onClick={handleBlock}
+                onKeyDown={onEnterOrSpace(handleBlock)}
               >
                 <span className="hover:bg-[#7940CF]">Block</span>
               </li>
               <li
                 className="hover:bg-[#7940CF] hover:rounded"
-                onClick={() => {
-                  socketStore?.socket?.emit(
-                    "inviteToGame",
-                    {
-                      inviterId: user.id,
-                      opponentId: currentUser.secondUserId,
-                      gameMode: "classic",
-                    },
-                    (data: { error: string | null; gameId: string }) => {
-                      if (data.error) {
-                        toast.error(data.error);
-                        return;
-                      }
-                      user.setGameWaitingId(data.gameId);
-                      inviteWaitingModalRef.current?.showModal();
-                    },
-                  );
-                }}
+                role="button"
+                tabIndex={0}
+                onClick={handleInviteToGame}
+                onKeyDown={onEnterOrSpace(handleInviteToGame)}
               >
                 <span>Invite to a game</span>
               </li>
               <li
-                onClick={() => {
-                  LayoutState.setShowPreviewCard(!LayoutState.showPreviewCard);
-                  onRemoveUserPreview();
-                }}
+                role="button"
+                tabIndex={0}
+                onClick={handleToggleUserInfo}
+                onKeyDown={onEnterOrSpace(handleToggleUserInfo)}
                 className="hidden md:block"
               >
                 <span className="hover:bg-[#7940CF]">
@@ -265,10 +305,10 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
           </div>
         ) : (
           <div className="dropdown">
-            <label tabIndex={0} className="">
-              <summary className="list-none p-3 cursor-pointer ">
-                <img src={More} alt="More" />
-              </summary>
+            <label tabIndex={0} className="" aria-label="More options">
+              <div className="list-none p-3 cursor-pointer ">
+                <img src={More} alt="" />
+              </div>
             </label>
             <ul
               tabIndex={0}
@@ -276,37 +316,33 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
             >
               {(currentRoom?.isAdmin === true ||
                 currentRoom?.isOwner === true) && (
-                <div className="icons-row flex flex-col">
-                  <a
-                    onClick={() => LayoutState.setShowSettingsModal(true)}
-                    href="#room-settings-modal"
-                    className=""
+                <>
+                  <li
+                    role="button"
+                    tabIndex={0}
+                    onClick={handleOpenRoomSettings}
+                    onKeyDown={onEnterOrSpace(handleOpenRoomSettings)}
                   >
-                    <li>
-                      <span className="hover:bg-[#7940CF]">
-                        Edit Room Settings
-                      </span>
-                    </li>
-                  </a>
-                  <a
-                    onClick={() => {
-                      LayoutState.setShowAddUsersModal(true);
-                    }}
-                    href="#add-users-modal"
-                    className=""
+                    <span className="hover:bg-[#7940CF]">
+                      Edit Room Settings
+                    </span>
+                  </li>
+                  <li
+                    role="button"
+                    tabIndex={0}
+                    onClick={handleOpenAddUsers}
+                    onKeyDown={onEnterOrSpace(handleOpenAddUsers)}
                   >
-                    <li>
-                      <span className="hover:bg-[#7940CF]">Add Users</span>
-                    </li>
-                  </a>
-                </div>
+                    <span className="hover:bg-[#7940CF]">Add Users</span>
+                  </li>
+                </>
               )}
 
               <li
-                onClick={() => {
-                  LayoutState.setShowPreviewCard(!LayoutState.showPreviewCard);
-                  onRemoveUserPreview();
-                }}
+                role="button"
+                tabIndex={0}
+                onClick={handleToggleRoomInfo}
+                onKeyDown={onEnterOrSpace(handleToggleRoomInfo)}
                 className="hidden md:block"
               >
                 <span className="hover:bg-[#7940CF]">
@@ -315,22 +351,14 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
                     : "hide Room Info"}
                 </span>
               </li>
-              <div>
-                <li
-                  onClick={() => {
-                    ChatState.setIsLoading(true);
-                    leaveRoomCall(currentRoom?.id as string).then((res) => {
-                      ChatState.setIsLoading(false);
-                      if (res?.status === 200 || res?.status === 201) {
-                        toast.success("Room Left Successfully");
-                        ChatState.deleteRoom(currentRoom?.id as string);
-                      }
-                    });
-                  }}
-                >
-                  <span className="hover:bg-[#7940CF]">leave The Room</span>
-                </li>
-              </div>
+              <li
+                role="button"
+                tabIndex={0}
+                onClick={handleLeaveRoom}
+                onKeyDown={onEnterOrSpace(handleLeaveRoom)}
+              >
+                <span className="hover:bg-[#7940CF]">leave The Room</span>
+              </li>
             </ul>
             <ConfirmationModal
               isOpen={isModalOpen}

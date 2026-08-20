@@ -5,6 +5,7 @@ import {
   BsFillArrowRightCircleFill,
 } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { useDocumentTitle } from "../../Utils/helpers";
 
 type GameStatus = "playing" | "ended";
 type Difficulty = "easy" | "medium" | "hard";
@@ -79,6 +80,7 @@ const createInitialState = (
 };
 
 export const BotGame = () => {
+  useDocumentTitle("Play vs Bot");
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);

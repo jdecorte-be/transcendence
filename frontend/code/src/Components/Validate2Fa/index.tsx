@@ -32,7 +32,7 @@ export const Validate2Fa = () => {
     >
       <div className="flex flex-col gap-6 justify-center items-center content-center w-full">
         <div className="flex justify-center items-center gap-x-6">
-          <div className="flex flex-col justify-between items-center p-10 h-60 w-60 rounded-2xl border-2 border-violet-600">
+          <div className="flex flex-col justify-between items-center p-10 h-60 w-60 rounded-2xl border border-base-300 bg-accent">
             <span className="text-sm font-medium h-8 flex items-center justify-center">
               Verify your device
             </span>
@@ -41,7 +41,7 @@ export const Validate2Fa = () => {
               <input
                 type="text"
                 placeholder="000000"
-                className="w-[70%] text-center border border-violet-600 bg-[var(--black)] rounded tracking-wider leading-none py-0.5"
+                className="w-[70%] text-center border border-base-300 bg-base-100 rounded-lg tracking-wider leading-none py-0.5"
                 maxLength={6}
                 onKeyDown={(event) => {
                   if (
@@ -60,7 +60,7 @@ export const Validate2Fa = () => {
               />
             </div>
             <button
-              className="btn bg-gray-200 text-black text-sm hover:btn-primary hover:text-white !h-8 !min-h-0"
+              className="btn btn-primary text-sm !h-8 !min-h-0"
               onClick={async () => {
                 try {
                   await api.post("/auth/validate2fa", {

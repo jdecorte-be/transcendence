@@ -40,7 +40,7 @@ export const InvitationWaiting = forwardRef<HTMLDialogElement, any>(
         id="invitaion_waiting_modal"
         className="modal backdrop:bg-[color:var(--black)]/70"
       >
-        <div className="modal-box">
+        <div className="modal-box border border-base-300">
           <div className="modal-action flex flex-col gap-8">
             <div className="flex flex-col items-center">
               <img
@@ -48,10 +48,10 @@ export const InvitationWaiting = forwardRef<HTMLDialogElement, any>(
                 alt="avatar"
                 className="h-20 w-20 rounded-full mb-4"
               />
-              <span className="text-sm text-center text-white font-light mb-2">
+              <span className="text-sm text-center text-base-content font-light mb-2">
                 {`${props?.oppenent?.name?.first} ${props?.user?.name?.last}`}
               </span>
-              <span className="text-xs text-gray-500 font-light">
+              <span className="text-xs text-base-content/50 font-light">
                 @{props?.oppenent?.username}
               </span>
             </div>

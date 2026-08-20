@@ -58,6 +58,7 @@ model Friend {
   to       User    @relation("to", fields: [toId], references: [userId], onDelete: Cascade)
 
   @@unique([fromId, toId], name: "unique_friend")
+  @@index([toId])
   @@map("friends")
 }
 
@@ -73,6 +74,8 @@ model BlockedUsers {
   dmRoomId      String?
 
   @@unique([blocked_by_id, blocked_id], name: "unique_block")
+  @@index([dmRoomId])
+  @@index([blocked_id])
   @@map("blocked_friends")
 }
 
@@ -90,6 +93,9 @@ model Match {
   participant1   User    @relation("participant1", fields: [participant1Id], references: [userId], onDelete: Cascade)
   participant2   User    @relation("participant2", fields: [participant2Id], references: [userId], onDelete: Cascade)
 
+  @@index([winner_id])
+  @@index([participant1Id])
+  @@index([participant2Id])
   @@map("matches")
 }
 
@@ -105,6 +111,7 @@ model Message {
   content  String?
 
   @@unique([createdAt])
+  @@index([roomId])
   @@map("messages")
 }
 
@@ -140,6 +147,7 @@ model RoomMember {
   room         Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roomId], name: "unique_user_room")
+  @@index([roomId])
   @@map("room_members")
 }
 
@@ -157,6 +165,7 @@ model Notification {
   actor       User      @relation("actor", fields: [actorId], references: [userId], onDelete: Cascade)
   receiver    User      @relation("receiver", fields: [receiverId], references: [userId], onDelete: Cascade)
   @@unique([createdAt])
+  @@index([receiverId])
   @@map("notifications")
 }
 

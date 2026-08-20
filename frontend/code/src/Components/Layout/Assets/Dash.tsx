@@ -10,8 +10,8 @@ export const Dash = ({ selected, className, ...props }: DashProps) => {
     <Link to={"Home"}>
       <div
         className={classNames(
-          "h-10 w-10 hover:bg-secondary p-1 rounded-xl flex justify-center items-center hover:cursor-pointer",
-          selected && "bg-secondary",
+          "h-10 w-10 p-1 rounded-xl flex justify-center items-center hover:cursor-pointer hover:bg-primary/10 text-base-content/50 transition-all duration-200 hover:scale-110 active:scale-95",
+          selected && "bg-primary/15 text-primary scale-105",
           className,
         )}
         {...props}
@@ -29,7 +29,7 @@ export const Dash = ({ selected, className, ...props }: DashProps) => {
             width="6"
             height="7"
             rx="1"
-            stroke="#BDBDBD"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinejoin="round"
           />
@@ -39,7 +39,7 @@ export const Dash = ({ selected, className, ...props }: DashProps) => {
             width="6"
             height="5"
             rx="1"
-            stroke="#BDBDBD"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinejoin="round"
           />
@@ -49,7 +49,7 @@ export const Dash = ({ selected, className, ...props }: DashProps) => {
             width="6"
             height="5"
             rx="1"
-            stroke="#BDBDBD"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinejoin="round"
           />
@@ -59,7 +59,7 @@ export const Dash = ({ selected, className, ...props }: DashProps) => {
             width="6"
             height="7"
             rx="1"
-            stroke="#BDBDBD"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinejoin="round"
           />

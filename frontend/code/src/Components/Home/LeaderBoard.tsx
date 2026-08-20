@@ -83,7 +83,10 @@ export const LeaderBoard = () => {
           </div>
         </div>
         <div className="hidden sm:flex items-center gap-2 text-xs text-neutral/60">
-          <Trophy className="w-4 h-4" />
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+          </span>
           Updated live
         </div>
       </div>
@@ -113,7 +116,8 @@ export const LeaderBoard = () => {
                   (x: any, index: number) => (
                     <div
                       key={index}
-                      className={`flex flex-col justify-between rounded-2xl border border-base-300/60 bg-accent/60 p-4 min-h-[140px] ${
+                      style={{ animationDelay: `${index * 90}ms` }}
+                      className={`animate-fade-in-up flex flex-col justify-between rounded-2xl border border-base-300/60 bg-accent/60 p-4 min-h-[140px] transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg ${
                         index === 0 ? "shadow-md" : "shadow-sm"
                       }`}
                     >
@@ -132,7 +136,7 @@ export const LeaderBoard = () => {
                           <Link to={`/Profile/${x.userId}`}>
                             <div className="flex items-center gap-3 mt-3">
                               <img
-                                className="w-12 h-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+                                className="w-12 h-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 transition-transform duration-300 hover:scale-110"
                                 src={buildAvatarUrl(x?.avatar, 72)}
                                 alt={x?.Username}
                               />
@@ -167,7 +171,8 @@ export const LeaderBoard = () => {
                   rest.map((x: any, index: number) => (
                     <div
                       key={index}
-                      className="flex items-center gap-4 bg-accent rounded-xl px-4 py-3 border border-base-300/40"
+                      style={{ animationDelay: `${Math.min(index, 10) * 60}ms` }}
+                      className="animate-fade-in-up flex items-center gap-4 bg-accent rounded-xl px-4 py-3 border border-base-300/40 transition-all duration-200 hover:border-primary/40 hover:translate-x-1"
                     >
                       <div className="flex items-center justify-center w-8 h-8 rounded-full bg-base-100/60 text-sm text-neutral">
                         {index + 4}

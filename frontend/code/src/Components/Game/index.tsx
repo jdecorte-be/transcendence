@@ -7,6 +7,7 @@ import {
 import { useGameState } from "./States/GameState";
 import { useSocketStore } from "../Chat/Services/SocketsServices";
 import { useNavigate } from "react-router-dom";
+import { useDocumentTitle } from "../../Utils/helpers";
 
 const DURATION = 12;
 type Cords = {
@@ -38,6 +39,7 @@ function throttlify(callback: any) {
 }
 
 export const Game = () => {
+  useDocumentTitle("Game");
   const gameState = useGameState();
   const socketStore = useSocketStore();
   const [level, setLevel] = useState(1);

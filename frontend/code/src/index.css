@@ -18,8 +18,8 @@
   }
 
   .customScroll {
-    --sb-track-color: #353135;
-    --sb-thumb-color: #7940CF;
+    --sb-track-color: #17171D;
+    --sb-thumb-color: #4B4B57;
     --sb-size: 8px;
 
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
@@ -37,7 +37,7 @@
   .customScroll::-webkit-scrollbar-thumb {
     background: var(--sb-thumb-color);
     border-radius: 8px;
-    border: 2px solid #7940CF;
+    border: 2px solid #232329;
   }
 }
 
@@ -46,7 +46,7 @@
 @layer base {
   html {
     @apply no-scrollbar;
-    @apply font-montserrat;
+    @apply font-poppins;
     @apply overflow-x-hidden;
   }
 

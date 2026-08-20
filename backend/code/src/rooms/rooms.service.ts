@@ -266,11 +266,6 @@ export class RoomsService {
       where: { id: roomData.roomId },
       select: {
         ownerId: true,
-        members: {
-          where: {
-            userId: roomData.memberId,
-          },
-        },
       },
     });
     //NOTE: test the members
@@ -370,21 +365,7 @@ export class RoomsService {
   async muteMember(roomData: ChangeOwnerDto, userId: string) {
     const room = await this.prisma.room.findUnique({
       where: { id: roomData.roomId },
-      select: {
-        ownerId: true,
-        members: {
-          where: {
-            OR: [
-              {
-                userId: roomData.memberId,
-              },
-              {
-                userId: userId,
-              },
-            ],
-          },
-        },
-      },
+      select: { id: true },
     });
     //NOTE: check members content
     const user = await this.prisma.roomMember.findUnique({
@@ -398,7 +379,7 @@ export class RoomsService {
         },
       },
       select: {
-        room: true,
+        room: { select: { ownerId: true } },
         is_mueted: true,
         userId: true,
       },
@@ -642,14 +623,18 @@ export class RoomsService {
     });
     if (!joined) return rooms;
 
-    const roomsData: roomsData[] = await Promise.all(
-      rooms.map(async (room) => {
-        const countMembers = await this.prisma.roomMember.count({
-          where: {
-            roomId: room.id,
-          },
-        });
+    const roomIds = rooms.map((room) => room.id);
+    const memberCounts = await this.prisma.roomMember.groupBy({
+      by: ['roomId'],
+      where: { roomId: { in: roomIds } },
+      _count: { id: true },
+    });
+    const memberCountByRoomId = new Map(
+      memberCounts.map((entry) => [entry.roomId, entry._count.id]),
+    );
 
+    const roomsWithLastMessage = await Promise.all(
+      rooms.map(async (room) => {
         const last_message = await this.prisma.message.findFirst({
           where: {
             roomId: room.id,
@@ -666,14 +651,28 @@ export class RoomsService {
             authorId: true,
           },
         });
-        const blocked = last_message
-          ? await this.prisma.blockedUsers.findFirst({
-              where: {
-                id: [userId, last_message.authorId].sort().join('-'),
-              },
-            })
-          : null;
+        return { room, last_message };
+      }),
+    );
 
+    const blockPairIds = roomsWithLastMessage
+      .filter(({ last_message }) => last_message)
+      .map(({ last_message }) =>
+        [userId, last_message.authorId].sort().join('-'),
+      );
+    const blockedPairs = await this.prisma.blockedUsers.findMany({
+      where: { id: { in: blockPairIds } },
+      select: { id: true },
+    });
+    const blockedPairIdSet = new Set(blockedPairs.map((pair) => pair.id));
+
+    const roomsData: roomsData[] = roomsWithLastMessage.map(
+      ({ room, last_message }) => {
+        const isBlocked =
+          last_message &&
+          blockedPairIdSet.has(
+            [userId, last_message.authorId].sort().join('-'),
+          );
         const is_owner = room.ownerId === userId;
         return {
           id: room.id,
@@ -681,10 +680,10 @@ export class RoomsService {
           type: room.type,
           is_admin: room.members[0].is_admin,
           is_owner,
-          countMembers,
-          last_message: blocked ? null : last_message,
+          countMembers: memberCountByRoomId.get(room.id) ?? 0,
+          last_message: isBlocked ? null : last_message,
         };
-      }),
+      },
     );
     return roomsData;
   }
@@ -877,44 +876,57 @@ export class RoomsService {
       },
     });
 
-    const dmsData: DMsData[] = await Promise.all(
-      rooms.map(async (room) => {
-        const secondMember = room.members.find(
-          (member) => member.user.userId !== userId,
-        );
-        const last_message = await this.prisma.message.findFirst({
-          where: {
-            roomId: room.id,
-          },
-          orderBy: {
-            createdAt: 'desc',
-          },
-          select: {
-            content: true,
-            createdAt: true,
-          },
-        });
-        const blocked = await this.prisma.blockedUsers.findFirst({
-          where: {
-            id: [userId, secondMember.user.userId].sort().join('-'),
-          },
-        });
-
-        const name: NAME = {
-          first: secondMember.user.firstName,
-          last: secondMember.user.lastName,
-        };
-        const avatar: PICTURE = buildAvatar(secondMember.user.avatar, name);
-        return {
-          id: room.id,
-          name: secondMember.user.firstName + ' ' + secondMember.user.lastName,
-          secondMemberId: secondMember.user.userId,
-          last_message: blocked ? null : last_message,
-          avatar,
-          bio: secondMember.user.discreption,
-        };
-      }),
+    const roomIds = rooms.map((room) => room.id);
+    const secondMembersByRoomId = new Map(
+      rooms.map((room) => [
+        room.id,
+        room.members.find((member) => member.user.userId !== userId),
+      ]),
     );
+
+    const lastMessages = await this.prisma.message.findMany({
+      where: { roomId: { in: roomIds } },
+      orderBy: { createdAt: 'desc' },
+      distinct: ['roomId'],
+      select: {
+        roomId: true,
+        content: true,
+        createdAt: true,
+      },
+    });
+    const lastMessageByRoomId = new Map(
+      lastMessages.map((message) => [message.roomId, message]),
+    );
+
+    const blockPairIds = roomIds.map((roomId) => {
+      const secondMember = secondMembersByRoomId.get(roomId);
+      return [userId, secondMember.user.userId].sort().join('-');
+    });
+    const blockedPairs = await this.prisma.blockedUsers.findMany({
+      where: { id: { in: blockPairIds } },
+      select: { id: true },
+    });
+    const blockedPairIdSet = new Set(blockedPairs.map((pair) => pair.id));
+
+    const dmsData: DMsData[] = rooms.map((room) => {
+      const secondMember = secondMembersByRoomId.get(room.id);
+      const pairId = [userId, secondMember.user.userId].sort().join('-');
+      const last_message = lastMessageByRoomId.get(room.id) ?? null;
+
+      const name: NAME = {
+        first: secondMember.user.firstName,
+        last: secondMember.user.lastName,
+      };
+      const avatar: PICTURE = buildAvatar(secondMember.user.avatar, name);
+      return {
+        id: room.id,
+        name: secondMember.user.firstName + ' ' + secondMember.user.lastName,
+        secondMemberId: secondMember.user.userId,
+        last_message: blockedPairIdSet.has(pairId) ? null : last_message,
+        avatar,
+        bio: secondMember.user.discreption,
+      };
+    });
     return dmsData;
   }
 

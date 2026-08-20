@@ -9,11 +9,57 @@ module.exports = {
     extend: {
       animation: {
         border: "background ease infinite",
+        "fade-in-up": "fade-in-up 0.7s ease-out both",
+        "fade-in": "fade-in 0.25s ease-out both",
+        float: "float 4s ease-in-out infinite",
+        "scale-in": "scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "slide-in-right": "slide-in-right 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "slide-in-left": "slide-in-left 0.5s cubic-bezier(0.16, 1, 0.3, 1) both",
+        shimmer: "shimmer 2s linear infinite",
+        "pulse-glow": "pulse-glow 2.5s ease-in-out infinite",
+        wiggle: "wiggle 0.5s ease-in-out",
       },
       keyframes: {
         background: {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
+        },
+        "fade-in-up": {
+          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "scale-in": {
+          "0%": { opacity: "0", transform: "scale(0.92)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "slide-in-right": {
+          "0%": { opacity: "0", transform: "translateX(32px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        "slide-in-left": {
+          "0%": { opacity: "0", transform: "translateX(-32px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.55" },
+        },
+        wiggle: {
+          "0%, 100%": { transform: "rotate(0deg)" },
+          "25%": { transform: "rotate(-4deg)" },
+          "75%": { transform: "rotate(4deg)" },
         },
       },
       screens: {
@@ -24,11 +70,6 @@ module.exports = {
         lexend: ["Lexend Peta", "sans-serif"],
         montserrat: ["Montserrat", "sans-serif"],
       },
-
-      backgroundImage: {
-        login: "url('./Components/Login/Assets/bg.gif')",
-        "gif-error": "url('./Components/Error/Assets/Error.gif')",
-      },
     },
   },
 
@@ -37,53 +78,35 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          "base-100": "#000000",
+          "base-100": "#0A0A0D",
 
-          "base-200": "#272932",
+          "base-200": "#131318",
 
-          primary: "#7940CF",
+          "base-300": "#232329",
 
-          "primary-content": "#5921CB",
+          primary: "#7C5CFA",
 
-          secondary: "#6A4CFC",
+          "primary-content": "#FFFFFF",
 
-          "secondary-content": "#1A1C26",
+          secondary: "#4B4B57",
 
-          accent: "#1A1C26",
+          "secondary-content": "#E9E9EC",
 
-          neutral: "#FFFFFF",
+          accent: "#17171D",
 
-          info: "#3e9cea",
+          "accent-content": "#E9E9EC",
 
-          success: "#1ba177",
+          neutral: "#E9E9EC",
 
-          warning: "#99670f",
+          info: "#4C8DFF",
 
-          error: "#e93f6f",
-        },
-        secondtheme: {
-          "base-100": "#2b2d50",
+          success: "#34D399",
 
-          "base-200": "#1d252f",
+          warning: "#F5A623",
 
-          primary: "#fcecb3",
-
-          "primary-content": "#be8f04",
-
-          secondary: "#4c95c9",
-
-          "secondary-content": "#79f289",
-
-          accent: "#66ebd9",
-
-          neutral: "#FFFFFF",
-
-          error: "#e93535",
+          error: "#E93F6F",
         },
       },
-      "light",
-      "dark",
-      "cyberpunk",
     ], // true: all themes | false: only light + dark | array: specific themes like this ["light", "dark", "cupcake"]
     darkTheme: "dark", // name of one of the included themes for dark mode
     base: true, // applies background color and foreground color for root element by default

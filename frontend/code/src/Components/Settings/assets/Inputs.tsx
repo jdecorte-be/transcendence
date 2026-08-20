@@ -9,7 +9,7 @@ import { useUserStore } from "../../../Stores/stores";
 import toast from "react-hot-toast";
 import api from "../../../Api/base";
 
-import { classNames } from "../../../Utils/helpers";
+import { classNames, onEnterOrSpace } from "../../../Utils/helpers";
 
 const postData: any = async (data: any, payload: any): Promise<string> => {
   const key = payload; // Replace with your actual payload key
@@ -117,10 +117,18 @@ export const Inputs = (props: InputsProps) => {
     }
   };
 
+  const labelId = `${props.payload}-label`;
+  const submitEdit = handleSubmit(onSubmit, handleError);
+
   return (
-    <div className="w-full sm:w-4/6">
-      <h6 className="text-sm flex">{props.name}</h6>
-      <div className="flex items-center w-full h-16">
+    <div className="w-full">
+      <h6
+        id={labelId}
+        className="text-xs font-semibold uppercase tracking-wide text-neutral/50 mb-1.5"
+      >
+        {props.name}
+      </h6>
+      <div className="flex items-center w-full">
         <form
           className={classNames(
             "gap-y-2 p-2 flex justify-center items-center w-full",
@@ -131,8 +139,9 @@ export const Inputs = (props: InputsProps) => {
             {props.name === "Email" ? (
               <input
                 type="email"
+                aria-labelledby={labelId}
                 className={classNames(
-                  "h-12 w-full rounded-3xl text-center",
+                  "h-12 w-full rounded-xl border border-base-300/60 bg-base-100/60 px-4 text-left text-sm text-neutral outline-none transition placeholder:text-neutral/30 focus:border-primary/60 disabled:cursor-default disabled:opacity-70",
                   props.className,
                 )}
                 defaultValue={props.data}
@@ -151,8 +160,9 @@ export const Inputs = (props: InputsProps) => {
             ) : (
               <input
                 type="text"
+                aria-labelledby={labelId}
                 className={classNames(
-                  "h-12 w-full rounded-3xl text-center",
+                  "h-12 w-full rounded-xl border border-base-300/60 bg-base-100/60 px-4 text-left text-sm text-neutral outline-none transition placeholder:text-neutral/30 focus:border-primary/60 disabled:cursor-default disabled:opacity-70",
                   props.className,
                 )}
                 defaultValue={props.data}
@@ -167,7 +177,14 @@ export const Inputs = (props: InputsProps) => {
             )}
           </div>
           {!input && (
-            <animated.div style={{ ...springs }} onClick={handleNameClick}>
+            <animated.div
+              style={{ ...springs }}
+              onClick={handleNameClick}
+              role="button"
+              tabIndex={0}
+              aria-label={`Edit ${props.name}`}
+              onKeyDown={onEnterOrSpace(handleNameClick)}
+            >
               <Edit />
             </animated.div>
           )}
@@ -175,11 +192,19 @@ export const Inputs = (props: InputsProps) => {
             <animated.div style={{ ...springs }} onClick={handleNameClick}>
               <div className="flex gap-1 items-center">
                 <BsFillCheckCircleFill
-                  onClick={handleSubmit(onSubmit, handleError)}
+                  onClick={submitEdit}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Save ${props.name}`}
+                  onKeyDown={onEnterOrSpace(submitEdit)}
                   className="fill-green-400 hover:fill-green-700 hover:cursor-pointer h-8 w-8 sm:w-10 sm:h-10"
                 />
                 <BsFillXCircleFill
                   onClick={handleCancel}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Cancel editing ${props.name}`}
+                  onKeyDown={onEnterOrSpace(handleCancel)}
                   className="fill-red-600 hover:fill-red-700 hover:cursor-pointer h-8 w-8 sm:w-10 sm:h-10"
                 />
               </div>

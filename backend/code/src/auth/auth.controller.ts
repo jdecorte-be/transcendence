@@ -73,6 +73,21 @@ export class AuthController {
     });
   }
 
+  @Post('login/random')
+  @HttpCode(HttpStatus.OK)
+  async loginRandom(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const tokens: Tokens = await this.authService.loginAsRandomUser();
+    const baseCookieOptions = this.getBaseCookieOptions(req);
+    res.cookie('X-Access-Token', tokens.access_token, baseCookieOptions);
+    res.cookie('X-Refresh-Token', tokens.refresh_token, {
+      ...baseCookieOptions,
+      path: '/auth',
+    });
+  }
+
   @Get('login/42')
   @UseGuards(FtOauthGuard)
   ftAuth() {

@@ -8,7 +8,7 @@ export const Logo = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     >
       <div className="hover:cursor-pointer">
         <svg
-          className={`${className} xl:w-20 xl:h-20 xl:pl-2 hover:fill-primary  hover:cursor-pointer`}
+          className={`${className} xl:w-20 xl:h-20 xl:pl-2 hover:fill-primary hover:cursor-pointer transition-transform duration-300 hover:scale-105`}
           width="95"
           height="51"
           viewBox="0 3 90 51"

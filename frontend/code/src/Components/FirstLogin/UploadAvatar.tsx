@@ -72,6 +72,7 @@ export const UploadAvatar = () => {
         <input
           type="text"
           placeholder="First Name "
+          aria-label="First Name"
           {...register("firstName", {
             required: true,
             maxLength: 50,
@@ -83,6 +84,7 @@ export const UploadAvatar = () => {
         <input
           type="text"
           placeholder="Last Name "
+          aria-label="Last Name"
           {...register("lastName", {
             required: true,
             maxLength: 50,
@@ -94,6 +96,7 @@ export const UploadAvatar = () => {
         <input
           type="text"
           placeholder="Bio"
+          aria-label="Bio"
           {...register("discreption", {
             required: true,
             maxLength: 50,
@@ -105,6 +108,7 @@ export const UploadAvatar = () => {
         <input
           type="text"
           placeholder="Username"
+          aria-label="Username"
           {...register("Username", {
             required: true,
             maxLength: 50,
@@ -116,6 +120,7 @@ export const UploadAvatar = () => {
         <input
           type="text"
           placeholder="Email "
+          aria-label="Email"
           {...register("email", {
             required: true,
             pattern: {
@@ -128,7 +133,7 @@ export const UploadAvatar = () => {
         />
 
         <input
-          className="bg-primary h-12 w-full rounded-md hover:bg-secondary hover:cursor-pointer  transition-colors text-white"
+          className="bg-primary h-12 w-full rounded-xl hover:brightness-110 hover:cursor-pointer transition-colors text-primary-content"
           type="submit"
           value="Save"
         />

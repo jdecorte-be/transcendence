@@ -44,6 +44,28 @@ export class AuthService {
     return tokens;
   }
 
+  async loginAsRandomUser(): Promise<Tokens> {
+    const eligibleUsers = await this.prisma.user.findMany({
+      where: {
+        password: { not: null },
+        tfaEnabled: false,
+        profileFinished: true,
+      },
+      select: { userId: true, email: true },
+    });
+
+    if (eligibleUsers.length === 0)
+      throw new HttpException('No users available', HttpStatus.NOT_FOUND);
+
+    const user =
+      eligibleUsers[Math.floor(Math.random() * eligibleUsers.length)];
+
+    const tokens = await this.jwtUtils.generateTokens(user.email, user.userId);
+    await this.jwtUtils.updateRefreshedHash(user.userId, tokens.refresh_token);
+
+    return tokens;
+  }
+
   async refresh(refresh_token: string, userId: string): Promise<Tokens> {
     const user = await this.usersService.getUserById(userId);
 

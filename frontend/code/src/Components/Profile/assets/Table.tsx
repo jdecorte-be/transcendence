@@ -103,7 +103,7 @@ export const Table = (props: any) => {
   }, [props.props.props]);
 
   return history.length > 0 || loading === true ? (
-    <div className="w-full h-full overflow-auto pb-6">
+    <div className="w-full h-full flex-1 overflow-auto pb-6">
       <div className="hidden md:flex items-center justify-between px-2 sm:px-4 pb-2 text-xs text-neutral/60">
         <span className="w-32">Date</span>
         <span className="flex-1 text-center">Players</span>
@@ -138,7 +138,8 @@ export const Table = (props: any) => {
             return (
               <div
                 key={index}
-                className="bg-accent border border-base-300/60 rounded-2xl w-full px-4 py-4 sm:px-6 sm:py-5 flex flex-col gap-3"
+                style={{ animationDelay: `${Math.min(index, 8) * 70}ms` }}
+                className="animate-fade-in-up bg-accent border border-base-300/60 rounded-2xl w-full px-4 py-4 sm:px-6 sm:py-5 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
               >
                 <div className="flex items-center justify-between text-xs text-neutral/70">
                   <span className="font-poppins">{formatTime(x.match.createdAt)}</span>
@@ -152,7 +153,7 @@ export const Table = (props: any) => {
                       <>
                         <Link to={`/Profile/${x.match.Player1.id}`} className="shrink-0">
                           <img
-                            className="rounded-xl h-10 w-10 sm:h-11 sm:w-11"
+                            className="rounded-xl h-10 w-10 sm:h-11 sm:w-11 transition-transform duration-200 hover:scale-110"
                             src={x.match.Player1.avatar.medium}
                             alt="Avatar"
                           />
@@ -185,7 +186,7 @@ export const Table = (props: any) => {
                         </span>
                         <Link to={`/Profile/${x.match.Player2.id}`} className="shrink-0">
                           <img
-                            className="rounded-xl h-10 w-10 sm:h-11 sm:w-11"
+                            className="rounded-xl h-10 w-10 sm:h-11 sm:w-11 transition-transform duration-200 hover:scale-110"
                             src={x.match.Player2.avatar.medium}
                             alt="Avatar"
                           />
@@ -203,7 +204,7 @@ export const Table = (props: any) => {
       </InfiniteScroll>
     </div>
   ) : (
-    <div className="flex items-center justify-center w-full h-full font-montserrat text-neutral">
+    <div className="flex items-center justify-center w-full h-full flex-1 font-montserrat text-neutral">
       <NullPlaceHolder message="No History Available" />
     </div>
   );

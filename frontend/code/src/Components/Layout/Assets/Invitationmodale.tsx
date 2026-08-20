@@ -43,7 +43,7 @@ export const InvitationGame = forwardRef<HTMLDialogElement, any>((_, ref) => {
   return (
     <dialog ref={ref} id="invitaion_game_modal" className="modal ">
       {inviter ? (
-        <div className="modal-box">
+        <div className="modal-box border border-base-300">
           <div className="modal-action flex flex-col gap-8">
             <div className="flex flex-col items-center gap-2">
               <img
@@ -51,12 +51,12 @@ export const InvitationGame = forwardRef<HTMLDialogElement, any>((_, ref) => {
                 alt="avatar"
                 className="h-20 w-20 rounded-full"
               />
-              <span className="text-xs text-gray-500 font-light">
+              <span className="text-xs text-base-content/50 font-light">
                 @{inviter?.username}
               </span>
             </div>
             <div className="flex flex-col items-cnter">
-              <span className="text-sm text-center text-white font-light">
+              <span className="text-sm text-center text-base-content font-light">
                 {`${inviter?.name?.first} ${inviter?.name?.last} invited you to play a game`}
               </span>
             </div>
@@ -91,7 +91,7 @@ export const InvitationGame = forwardRef<HTMLDialogElement, any>((_, ref) => {
           </div>
         </div>
       ) : (
-        <div className="modal-box flex flex-row items-cnter justify-center gap-2">
+        <div className="modal-box border border-base-300 flex flex-row items-cnter justify-center gap-2">
           <span>loading</span>
           <span className="loading loading-dots loading-md">loading</span>
         </div>

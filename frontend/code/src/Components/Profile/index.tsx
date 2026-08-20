@@ -30,7 +30,7 @@ import { useModalStore } from "../Chat/Controllers/LayoutControllers";
 import { blockUserCall } from "../Chat/Services/FriendsServices";
 import { AxiosError } from "axios";
 import { InvitationWaiting } from "../Layout/Assets/Invitationacceptance";
-import { classNames } from "../../Utils/helpers";
+import { classNames, onEnterOrSpace, useDocumentTitle } from "../../Utils/helpers";
 type FRIENDSHIP = "none" | "friend" | "sent" | "recive" | "blocked" | undefined;
 
 const getAchievementLabel = (value?: number | null) => {
@@ -41,6 +41,7 @@ const getAchievementLabel = (value?: number | null) => {
 };
 
 export const Profile = () => {
+  useDocumentTitle("Profile");
   const user = useUserStore();
   const params = useParams();
   const navigate = useNavigate();
@@ -174,6 +175,69 @@ export const Profile = () => {
     });
   };
 
+  const handleBlock = () => {
+    ChatState.setIsLoading(true);
+    blockUserCall(profile.id).then((res) => {
+      ChatState.setIsLoading(false);
+      if (res?.status === 200 || res?.status === 201) {
+        toast.success("User Blocked");
+        navigate("/chat", { replace: true });
+      } else {
+        toast.error("Could Not Block User");
+      }
+    });
+  };
+
+  const handleInviteClassicGame = () => {
+    socketStore?.socket?.emit(
+      "inviteToGame",
+      {
+        inviterId: user.id,
+        opponentId: profile.id,
+        gameMode: "cassic",
+      },
+      (data: { error: string | null; gameId: string }) => {
+        if (data.error) {
+          toast.error(data.error);
+          return;
+        }
+        user.setGameWaitingId(data.gameId);
+        inviteWaitingModalRef.current?.showModal();
+      },
+    );
+  };
+
+  const handleInviteCustomGame = () => {
+    socketStore?.socket?.emit(
+      "inviteToGame",
+      {
+        inviterId: user.id,
+        opponentId: profile.id,
+        gameMode: "extra",
+      },
+      (data: { error: string | null; gameId: string }) => {
+        if (data.error) {
+          toast.error(data.error);
+          return;
+        }
+        user.setGameWaitingId(data.gameId);
+        inviteWaitingModalRef.current?.showModal();
+      },
+    );
+  };
+
+  const handleUnfriend = () => {
+    cancelRequest();
+  };
+
+  const handleShowFriendsList = () => {
+    LayoutState.setShowFriendsListModal(true);
+  };
+
+  const handleShowBlockedList = () => {
+    LayoutState.setShowBlockedListModal(true);
+  };
+
   return (
     <>
       <div className="flex flex-col items-center h-full bg-accent">
@@ -191,8 +255,8 @@ export const Profile = () => {
             <Pong />
           </div>
 
-          <div className="avatar absolute z-40 -bottom-6 sm:-bottom-8 md:-bottom-10 left-6 sm:left-12">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full ring ring-neutral flex justify-center items-center ring-offset-base-100 ring-offset-1">
+          <div className="avatar absolute z-40 -bottom-6 sm:-bottom-8 md:-bottom-10 left-6 sm:left-12 animate-scale-in">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full ring ring-neutral flex justify-center items-center ring-offset-base-100 ring-offset-1 transition-transform duration-300 hover:scale-105">
               {isLoadingProfile ? (
                 <div className="w-full h-full rounded-full bg-base-300/70 animate-pulse" />
               ) : avatarSrc ? (
@@ -219,7 +283,7 @@ export const Profile = () => {
           </div>
         </div>
         <div className="relative grid grid-cols-1 lg:grid-cols-[1.3fr_0.7fr] gap-4 sm:gap-6 px-4 sm:px-8 pl-24 sm:pl-28 lg:pl-8 text-neutral font-montserrat bg-base-200 justify-between items-start min-h-[25%] rounded-b-3xl w-full max-w-[1100px] pt-12 pb-6 mx-auto">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 animate-fade-in-up">
             {isLoadingProfile ? (
               <div className="flex flex-col gap-3">
                 <div className="h-5 w-32 rounded-full bg-base-300/70 animate-pulse" />
@@ -279,7 +343,7 @@ export const Profile = () => {
             )}
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 animate-fade-in-up [animation-delay:100ms]">
             <div className="flex flex-col gap-3">
               {isLoadingProfile && (
                 <div className="flex flex-col gap-3">
@@ -299,36 +363,24 @@ export const Profile = () => {
                       Send request
                     </button>
                     <div className="dropdown">
-                      <label tabIndex={0} className="">
-                        <summary className="list-none p-3 cursor-pointer ">
-                          <img src={More} alt="More" />
-                        </summary>
+                      <label tabIndex={0} className="" aria-label="More options">
+                        <div className="list-none p-3 cursor-pointer transition-transform duration-200 hover:scale-125 active:scale-95">
+                          <img src={More} alt="" />
+                        </div>
                       </label>
                       <ul
                         tabIndex={0}
                         className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 absolute"
                       >
-                        <span className="hover:bg-[#7940CF] hover:rounded">
-                          <li
-                            onClick={() => {
-                              ChatState.setIsLoading(true);
-                              blockUserCall(profile.id).then((res) => {
-                                ChatState.setIsLoading(false);
-                                if (
-                                  res?.status === 200 ||
-                                  res?.status === 201
-                                ) {
-                                  toast.success("User Blocked");
-                                  navigate("/chat", { replace: true });
-                                } else {
-                                  toast.error("Could Not Block User");
-                                }
-                              });
-                            }}
-                          >
-                            <div>Block</div>
-                          </li>
-                        </span>
+                        <li
+                          className="hover:bg-[#7940CF] hover:rounded"
+                          role="button"
+                          tabIndex={0}
+                          onClick={handleBlock}
+                          onKeyDown={onEnterOrSpace(handleBlock)}
+                        >
+                          <div>Block</div>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -404,10 +456,10 @@ export const Profile = () => {
                       Message
                     </button>
                     <div className="dropdown">
-                      <label tabIndex={0} className="">
-                        <summary className="list-none p-3 cursor-pointer ">
-                          <img src={More} alt="More" />
-                        </summary>
+                      <label tabIndex={0} className="" aria-label="More options">
+                        <div className="list-none p-3 cursor-pointer transition-transform duration-200 hover:scale-125 active:scale-95">
+                          <img src={More} alt="" />
+                        </div>
                       </label>
                       <ul
                         tabIndex={0}
@@ -415,86 +467,40 @@ export const Profile = () => {
                       >
                         <li
                           className="hover:bg-[#7940CF] hover:rounded"
-                          onClick={() => {
-                            socketStore?.socket?.emit(
-                              "inviteToGame",
-                              {
-                                inviterId: user.id,
-                                opponentId: profile.id,
-                                gameMode: "cassic",
-                              },
-                              (data: {
-                                error: string | null;
-                                gameId: string;
-                              }) => {
-                                if (data.error) {
-                                  toast.error(data.error);
-                                  return;
-                                }
-                                user.setGameWaitingId(data.gameId);
-                                inviteWaitingModalRef.current?.showModal();
-                              },
-                            );
-                          }}
+                          role="button"
+                          tabIndex={0}
+                          onClick={handleInviteClassicGame}
+                          onKeyDown={onEnterOrSpace(handleInviteClassicGame)}
                         >
                           <span>Invite to a classic game</span>
                         </li>
                         <li
                           className="hover:bg-[#7940CF] hover:rounded"
-                          onClick={() => {
-                            socketStore?.socket?.emit(
-                              "inviteToGame",
-                              {
-                                inviterId: user.id,
-                                opponentId: profile.id,
-                                gameMode: "extra",
-                              },
-                              (data: {
-                                error: string | null;
-                                gameId: string;
-                              }) => {
-                                if (data.error) {
-                                  toast.error(data.error);
-                                  return;
-                                }
-                                user.setGameWaitingId(data.gameId);
-                                inviteWaitingModalRef.current?.showModal();
-                              },
-                            );
-                          }}
+                          role="button"
+                          tabIndex={0}
+                          onClick={handleInviteCustomGame}
+                          onKeyDown={onEnterOrSpace(handleInviteCustomGame)}
                         >
                           <span>Invite to a custom game</span>
                         </li>
-                        <span className="hover:bg-[#7940CF] hover:rounded">
-                          <li
-                            onClick={async () => {
-                              ChatState.setIsLoading(true);
-                              await blockUserCall(profile.id).then((res) => {
-                                ChatState.setIsLoading(false);
-                                if (
-                                  res?.status === 200 ||
-                                  res?.status === 201
-                                ) {
-                                  toast.success("User Blocked");
-                                  navigate("/chat", { replace: true });
-                                } else {
-                                  toast.error("Could Not Block User");
-                                }
-                              });
-                            }}
-                          >
-                            <div>Block</div>
-                          </li>
-                        </span>
-                        <span className="hover:bg-[#7940CF] hover:rounded">
-                          <li
-                            onClick={() => {
-                              cancelRequest();
-                            }}
-                          >
-                            <div>Unfriend</div>
-                          </li>
-                        </span>
+                        <li
+                          className="hover:bg-[#7940CF] hover:rounded"
+                          role="button"
+                          tabIndex={0}
+                          onClick={handleBlock}
+                          onKeyDown={onEnterOrSpace(handleBlock)}
+                        >
+                          <div>Block</div>
+                        </li>
+                        <li
+                          className="hover:bg-[#7940CF] hover:rounded"
+                          role="button"
+                          tabIndex={0}
+                          onClick={handleUnfriend}
+                          onKeyDown={onEnterOrSpace(handleUnfriend)}
+                        >
+                          <div>Unfriend</div>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -510,35 +516,33 @@ export const Profile = () => {
                     </button>
                   </Link>
                   <div className="dropdown">
-                    <label tabIndex={0} className="">
-                      <summary className="list-none p-3 cursor-pointer ">
-                        <img src={More} alt="More" />
-                      </summary>
+                    <label tabIndex={0} className="" aria-label="More options">
+                      <div className="list-none p-3 cursor-pointer transition-transform duration-200 hover:scale-125 active:scale-95">
+                        <img src={More} alt="" />
+                      </div>
                     </label>
                     <ul
                       tabIndex={0}
                       className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 absolute bottom-16"
                     >
                       <li
-                        onClick={() =>
-                          LayoutState.setShowFriendsListModal(true)
-                        }
+                        role="button"
+                        tabIndex={0}
+                        onClick={handleShowFriendsList}
+                        onKeyDown={onEnterOrSpace(handleShowFriendsList)}
                       >
-                        <span className="hover:bg-[#7940CF]">
-                          <a href="#friends-list-modal" className="pr-2">
-                            <div>See Friends List</div>
-                          </a>
+                        <span className="hover:bg-[#7940CF] pr-2">
+                          See Friends List
                         </span>
                       </li>
                       <li
-                        onClick={() =>
-                          LayoutState.setShowBlockedListModal(true)
-                        }
+                        role="button"
+                        tabIndex={0}
+                        onClick={handleShowBlockedList}
+                        onKeyDown={onEnterOrSpace(handleShowBlockedList)}
                       >
-                        <span className="hover:bg-[#7940CF]">
-                          <a href="#blocked-users-modal" className="pr-2">
-                            <div>See Blocked List</div>
-                          </a>
+                        <span className="hover:bg-[#7940CF] pr-2">
+                          See Blocked List
                         </span>
                       </li>
                     </ul>
@@ -547,7 +551,7 @@ export const Profile = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-3 bg-accent/70 border border-base-300/50 rounded-2xl p-3 justify-center">
+            <div className="flex items-center gap-3 bg-accent/70 border border-base-300/50 rounded-2xl p-3 justify-center animate-fade-in-up [animation-delay:200ms]">
               {isLoadingProfile ? (
                 <>
                   <div className="h-16 w-16 rounded-xl bg-base-300/70 animate-pulse" />
@@ -557,7 +561,7 @@ export const Profile = () => {
               ) : (
                 <>
                   <img
-                    className={`h-16 sm:h-20 ${
+                    className={`h-16 sm:h-20 transition-transform duration-300 hover:scale-110 hover:-rotate-3 ${
                       profile?.achievement !== null && profile?.achievement >= 0
                         ? ""
                         : "opacity-30"
@@ -566,7 +570,7 @@ export const Profile = () => {
                     alt="newbie badge"
                   />
                   <img
-                    className={`h-16 sm:h-20 ${
+                    className={`h-16 sm:h-20 transition-transform duration-300 hover:scale-110 hover:rotate-3 ${
                       profile?.achievement !== null && profile?.achievement >= 1
                         ? ""
                         : "opacity-30"
@@ -575,7 +579,7 @@ export const Profile = () => {
                     alt="Master badge"
                   />
                   <img
-                    className={`h-16 sm:h-20 ${
+                    className={`h-16 sm:h-20 transition-transform duration-300 hover:scale-110 hover:-rotate-3 ${
                       profile?.achievement !== null && profile?.achievement >= 2
                         ? ""
                         : "opacity-30"
@@ -588,7 +592,7 @@ export const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="relative flex w-full max-w-[1100px] justify-center h-auto overflow-hidden px-4 sm:px-0">
+        <div className="relative flex w-full max-w-[1100px] justify-center h-auto overflow-hidden px-4 sm:px-0 animate-fade-in-up [animation-delay:250ms]">
           <History props={params.id} />
         </div>
       </div>

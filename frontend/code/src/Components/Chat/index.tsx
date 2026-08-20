@@ -26,7 +26,7 @@ import {
 
 import { getRoomMembersCall } from "./Services/ChatServices";
 
-import { classNames } from "../../Utils/helpers";
+import { classNames, useDocumentTitle } from "../../Utils/helpers";
 import { useModalStore } from "./Controllers/LayoutControllers";
 
 import { useNavigate } from "react-router-dom";
@@ -36,6 +36,7 @@ export interface ConversationProps {
 }
 
 export const Chat = () => {
+  useDocumentTitle("Chat");
   const [showUserPreview, setShowUserPreview] = useState(false);
   const ChatState = useChatStore((state) => state);
 
@@ -154,6 +155,7 @@ export const UserPreviewCard: React.FC<ConversationProps> = ({
         )}
 
         <button
+          aria-label="Close"
           onClick={() => {
             LayoutState.setShowPreviewCard(false);
             onRemoveUserPreview();
@@ -211,6 +213,7 @@ export const UserPreviewCard: React.FC<ConversationProps> = ({
                       <div className="avatar">
                         <div className="mask mask-squircle w-11 h-11">
                           <button
+                            aria-label="View profile"
                             onClick={() => navigate(`/profile/${user.id}`)}
                           >
                             <img

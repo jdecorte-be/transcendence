@@ -2,7 +2,7 @@ import { Chart } from "./assets/Chart";
 import { Table } from "./assets/Table";
 export const History = (props: any) => {
   return (
-    <div className="flex flex-col rounded-2xl justify-start items-start mt-6 sm:h-full h-full w-full bg-base-200 border border-base-300/60 shadow-sm">
+    <div className="flex flex-col rounded-2xl justify-start items-start mt-6 sm:h-full h-full min-h-[420px] w-full bg-base-200 border border-base-300/60 shadow-sm">
       <div className="flex justify-between items-center w-full px-4 pt-4 sm:px-10 sm:pt-8 pb-4">
         <div className="flex items-center gap-x-3">
           <Chart />

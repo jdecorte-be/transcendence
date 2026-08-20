@@ -47,7 +47,7 @@ export const Alert = () => {
                   <div
                     className={`${
                       t.visible ? "animate-enter" : "animate-leave"
-                    } max-w-sm w-full transition-opacity ease-in  bg-purple-500 rounded-xl  flex flex-col  relative top-[6vh] p-4`}
+                    } max-w-sm w-full transition-opacity ease-in  bg-primary rounded-xl  flex flex-col  relative top-[6vh] p-4`}
                   >
                     <div className="flex flex-row justify-between  ">
                       <div className="  flex flex-row ">
@@ -57,10 +57,10 @@ export const Alert = () => {
                           src={notification.entity.avatar.medium}
                         />
                         <div className=" pl-3 flex flex-col items-baseline">
-                          <p className=" text-white  font-poppins text-base font-semibold leading-5 capitalize">
+                          <p className=" text-primary-content  font-poppins text-base font-semibold leading-5 capitalize">
                             message Received
                           </p>
-                          <p className="text-[#2F3F53] font-poppins text-base font-normal text-center max-w-[150px] truncate">
+                          <p className="text-primary-content/70 font-poppins text-base font-normal text-center max-w-[150px] truncate">
                             {notification.entity.content}
                           </p>
                         </div>
@@ -115,28 +115,28 @@ export const Alert = () => {
         <div className="dropdown">
           <label tabIndex={1} className="relative">
             {unread > 0 && (
-              <div className="absolute bg-red-500 bottom-0 -right-2 rounded-full w-5 h-5 flex items-center justify-center text-xs text-white font-light">
+              <div className="absolute bg-error bottom-0 -right-2 rounded-full w-5 h-5 flex items-center justify-center text-xs text-white font-light animate-pulse-glow">
                 {unread > 9 ? "9+" : unread}
               </div>
             )}
             <svg
-              className="flex justify-center items-center w-10 sm:w-12 hover:cursor-pointer"
+              className="flex justify-center items-center w-10 sm:w-12 hover:cursor-pointer transition-transform duration-300 hover:scale-110 hover:rotate-6"
               width="62"
               height="62"
               viewBox="0 0 62 62"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <rect width="62" height="62" rx="20" fill="#1A1C26" />
+              <rect width="62" height="62" rx="20" fill="#131318" />
               <path
                 d="M27.9189 40.1081C28.5314 39.9785 32.2636 39.9785 32.8761 40.1081C33.3997 40.229 33.966 40.5116 33.966 41.1286C33.9355 41.716 33.5909 42.2367 33.1148 42.5674C32.4974 43.0487 31.7729 43.3535 31.0155 43.4633C30.5966 43.5176 30.185 43.5188 29.7807 43.4633C29.0221 43.3535 28.2976 43.0487 27.6814 42.5662C27.2041 42.2367 26.8594 41.716 26.829 41.1286C26.829 40.5116 27.3952 40.229 27.9189 40.1081ZM30.4698 19C33.0185 19 35.6219 20.2093 37.1684 22.2158C38.1718 23.5078 38.6321 24.7986 38.6321 26.8051V27.327C38.6321 28.8658 39.0388 29.7728 39.9338 30.818C40.6121 31.588 40.8288 32.5765 40.8288 33.6488C40.8288 34.7199 40.4769 35.7367 39.7719 36.5623C38.8488 37.552 37.5471 38.1838 36.2186 38.2936C34.2934 38.4577 32.367 38.5959 30.415 38.5959C28.4618 38.5959 26.5366 38.5132 24.6114 38.2936C23.2817 38.1838 21.98 37.552 21.0582 36.5623C20.3531 35.7367 20 34.7199 20 33.6488C20 32.5765 20.218 31.588 20.895 30.818C21.818 29.7728 22.198 28.8658 22.198 27.327V26.8051C22.198 24.7443 22.7118 23.3967 23.77 22.0776C25.3433 20.1538 27.8652 19 30.3602 19H30.4698Z"
-                fill="#8F8F8F"
+                fill="#8A8A93"
               />
             </svg>
           </label>
           <div
             tabIndex={1}
-            className="dropdown-content z-[60] card card-compact w-80 shadow bg-base-200 text-neutral relative right-0 top-16 overflow-hidden"
+            className="dropdown-content z-[60] card card-compact w-80 shadow bg-base-200 text-neutral relative right-0 top-16 overflow-hidden animate-scale-in origin-top-right"
           >
             <div className="card-body !p-0 !gap-0">
               <div className="flex flex-row justify-between items-center">
@@ -154,12 +154,12 @@ export const Alert = () => {
                   </div>
                 )}
               </div>
-              <ul className="bg-accent/80 border-t-2 border-violet-800 h-60 overflow-auto">
+              <ul className="bg-accent/80 border-t-2 border-base-300 h-60 overflow-auto">
                 {user.notifications.map((notification: any) => (
                   <li
                     key={notification.id}
                     className={classNames(
-                      "flex flex-row justify-start text-xs gap-3 p-4 hover:cursor-pointer",
+                      "flex flex-row justify-start text-xs gap-3 p-4 hover:cursor-pointer transition-all duration-150 hover:bg-primary/10 hover:pl-5",
                       notification.is_read && "opacity-50",
                     )}
                     onClick={async () => {
@@ -185,7 +185,7 @@ export const Alert = () => {
                           notification.actor.lastName
                         }  ${messages[notification.type]}`}
                       </div>
-                      <div className="text-right w-full text-[10px] text-gray-400">
+                      <div className="text-right w-full text-[10px] text-base-content/50">
                         {new Date(notification.createdAt).toDateString()}
                       </div>
                     </div>
@@ -193,9 +193,9 @@ export const Alert = () => {
                 ))}
                 <div
                   ref={ref}
-                  className="flex justify-center items-center h-2 py-5 border-t border-gray-700"
+                  className="flex justify-center items-center h-2 py-5 border-t border-base-300"
                 >
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-base-content/50">
                     {notificationDone ? "No more notifications" : "Loading..."}
                   </span>
                 </div>
