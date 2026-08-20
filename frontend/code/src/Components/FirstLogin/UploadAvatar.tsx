@@ -45,7 +45,7 @@ export const UploadAvatar = () => {
         error: "Error on Saving Data",
       });
       userStore.login();
-      navigate("/Home");
+      navigate("/home");
     } catch (e) {}
   };
   const handleError = (errors: any) => {

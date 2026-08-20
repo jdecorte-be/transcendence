@@ -3,6 +3,7 @@ import "./style.css";
 import { Link } from "react-router-dom";
 
 import { useUserStore } from "../../../Stores/stores";
+import { Img } from "../../Loading";
 
 const logoutUrl = `${process.env.REACT_APP_API_ENDPOINT}/auth/logout`;
 
@@ -16,18 +17,18 @@ export const Avatar = (props: AvatarProps) => {
   return (
     <div className="avatar myonline dropdown hover:cursor-pointer">
       <div tabIndex={0} className="w-10 sm:w-12 rounded-full">
-        <img alt="profile " src={props.picture} />
+        <Img alt="profile " src={props.picture} className="rounded-full" />
       </div>
       <ul
         tabIndex={0}
-        className="dropdown-content z-50 right-0 top-14 menu p-2 shadow bg-base-200 border border-base-300 rounded-box w-52"
+        className="dropdown-content z-50 right-0 top-14 menu p-2 shadow-xl bg-base-200/80 backdrop-blur-xl border border-white/10 rounded-box w-52"
       >
-        <Link to={"Settings"}>
+        <Link to={"settings"}>
           <li className="hover:bg-primary/10 hover:rounded-xl transition-colors">
             <div>Settings</div>
           </li>
         </Link>
-        <Link to={`Profile/${user.id}`}>
+        <Link to={`profile/${user.id}`}>
           <li className="hover:bg-primary/10 hover:rounded-xl transition-colors">
             <div>Profile</div>
           </li>

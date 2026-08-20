@@ -15,28 +15,28 @@ const router = createBrowserRouter([
     },
     children: [
       {
-        path: "Home",
+        path: "home",
         lazy: async () => {
           let { Home } = await import("../Components/Home");
           return { Component: Home };
         },
       },
       {
-        path: "Play",
+        path: "play",
         lazy: async () => {
           let { Play } = await import("../Components/Play");
           return { Component: Play };
         },
       },
       {
-        path: "Play/Bot",
+        path: "play/bot",
         lazy: async () => {
           let { BotGame } = await import("../Components/BotGame");
           return { Component: BotGame };
         },
       },
       {
-        path: "Settings",
+        path: "settings",
         lazy: async () => {
           let { Setting } = await import("../Components/Settings");
 
@@ -45,21 +45,21 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "Profile/:id",
+        path: "profile/:id",
         lazy: async () => {
           let { Profile } = await import("../Components/Profile");
           return { Component: Profile };
         },
       },
       {
-        path: "Chat",
+        path: "chat",
         lazy: async () => {
           let { Chat } = await import("../Components/Chat");
           return { Component: Chat };
         },
       },
       {
-        path: "Dm/:id",
+        path: "dm/:id",
         lazy: async () => {
           let { UserToUserChat } = await import(
             "../Components/Chat/Components/UserToUserChat"
@@ -68,7 +68,7 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: "Game/:id",
+        path: "game/:id",
         lazy: async () => {
           let { Game } = await import("../Components/Game");
           return { Component: Game };

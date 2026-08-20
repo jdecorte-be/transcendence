@@ -380,7 +380,7 @@ export const BotGame = () => {
               ))}
             </div>
           </div>
-          <button className="btn btn-ghost" onClick={() => navigate("/Play")}>
+          <button className="btn btn-ghost" onClick={() => navigate("/play")}>
             Back
           </button>
         </div>
@@ -471,7 +471,7 @@ export const BotGame = () => {
                 </button>
                 <button
                   className="btn btn-ghost"
-                  onClick={() => navigate("/Play")}
+                  onClick={() => navigate("/play")}
                 >
                   Back to Play
                 </button>

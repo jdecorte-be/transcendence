@@ -6,22 +6,11 @@ import toast from "react-hot-toast";
 import { Chart } from "./assets/Chart";
 import { Trophy } from "./assets/Trophy";
 import { Daimond } from "./assets/Daimond";
-import { Logo } from "../Layout/Assets/Logo";
+import { Skeleton, Dots, Img } from "../Loading";
 
 import { NullPlaceHolder } from "../Chat/Components/RoomChatHelpers";
 
 import api from "../../Api/base";
-
-const CLOUDINARY_BASE_URL =
-  "https://res.cloudinary.com/ds2oaoirs/image/upload";
-
-const buildAvatarUrl = (avatar?: string | null, size = 72) => {
-  if (!avatar) return "";
-  if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
-    return avatar;
-  }
-  return `${CLOUDINARY_BASE_URL}/c_thumb,h_${size},w_${size}/${avatar}`;
-};
 
 export const LeaderBoard = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -97,8 +86,8 @@ export const LeaderBoard = () => {
             dataLength={users.length}
             next={fetchItems}
             loader={
-              <div className="flex items-center justify-center w-full ">
-                <Logo className="sm:w-12 w-12" />
+              <div className="flex items-center justify-center w-full py-4">
+                <Dots className="text-primary" />
               </div>
             }
             endMessage={
@@ -122,10 +111,10 @@ export const LeaderBoard = () => {
                       }`}
                     >
                       {loading ? (
-                        <div className="flex flex-col gap-3 animate-pulse">
-                          <div className="h-4 w-20 rounded bg-base-300/70" />
-                          <div className="h-10 w-10 rounded-full bg-base-300/70" />
-                          <div className="h-4 w-32 rounded bg-base-300/70" />
+                        <div className="flex flex-col gap-3">
+                          <Skeleton className="h-4 w-20 rounded" />
+                          <Skeleton className="h-10 w-10 rounded-full" />
+                          <Skeleton className="h-4 w-32 rounded" />
                         </div>
                       ) : (
                         <>
@@ -133,11 +122,11 @@ export const LeaderBoard = () => {
                             <span className="uppercase tracking-wide">#{index + 1}</span>
                             <Trophy className="w-4 h-4" />
                           </div>
-                          <Link to={`/Profile/${x.userId}`}>
+                          <Link to={`/profile/${x.userId}`}>
                             <div className="flex items-center gap-3 mt-3">
-                              <img
+                              <Img
                                 className="w-12 h-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 transition-transform duration-300 hover:scale-110"
-                                src={buildAvatarUrl(x?.avatar, 72)}
+                                src={x?.avatar?.medium}
                                 alt={x?.Username}
                               />
                               <div className="flex flex-col">
@@ -177,11 +166,11 @@ export const LeaderBoard = () => {
                       <div className="flex items-center justify-center w-8 h-8 rounded-full bg-base-100/60 text-sm text-neutral">
                         {index + 4}
                       </div>
-                      <Link to={`/Profile/${x.userId}`} className="flex-1">
+                      <Link to={`/profile/${x.userId}`} className="flex-1">
                         <div className="flex items-center gap-3">
-                          <img
+                          <Img
                             className="w-9 h-9 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
-                            src={buildAvatarUrl(x?.avatar, 72)}
+                            src={x?.avatar?.medium}
                             alt={x?.Username}
                           />
                           <span className="font-montserrat text-neutral font-semibold truncate">

@@ -2,6 +2,7 @@ import React, { forwardRef, RefObject, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useUserStore } from "../../../Stores/stores";
 import { useSocketStore } from "../../Chat/Services/SocketsServices";
+import { Dots, Img } from "../../Loading";
 
 export const InvitationWaiting = forwardRef<HTMLDialogElement, any>(
   (props, ref) => {
@@ -43,7 +44,7 @@ export const InvitationWaiting = forwardRef<HTMLDialogElement, any>(
         <div className="modal-box border border-base-300">
           <div className="modal-action flex flex-col gap-8">
             <div className="flex flex-col items-center">
-              <img
+              <Img
                 src={`${props?.oppenent?.picture?.large}`}
                 alt="avatar"
                 className="h-20 w-20 rounded-full mb-4"
@@ -57,7 +58,7 @@ export const InvitationWaiting = forwardRef<HTMLDialogElement, any>(
             </div>
             <div className="flex flex-row justify-center gap-4">
               <span>Waiting for the other player to accept</span>
-              <span className="loading loading-dots loading-md">loading</span>
+              <Dots className="text-primary" />
             </div>
             <form method="dialog" className="items-cnter">
               <div className="flex flex-row gap-2 justify-end">

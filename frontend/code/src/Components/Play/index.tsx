@@ -41,7 +41,7 @@ export const Play = () => {
     }
   };
   const launchBotGame = () => {
-    navigate("/Play/Bot");
+    navigate("/play/bot");
   };
   const modes = [
     {

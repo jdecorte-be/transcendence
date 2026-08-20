@@ -30,6 +30,7 @@ import { classNames, useDocumentTitle } from "../../Utils/helpers";
 import { useModalStore } from "./Controllers/LayoutControllers";
 
 import { useNavigate } from "react-router-dom";
+import { Spinner, Img } from "../Loading";
 
 export interface ConversationProps {
   onRemoveUserPreview: () => void;
@@ -53,7 +54,7 @@ export const Chat = () => {
 
   return (
     <>
-      <div className="flex h-full bg-[#1A1C26] relative">
+      <div className="flex h-full bg-accent relative">
         <div>
           {modalState.showExploreModal && <ExploreRoomsModal />}
           {modalState.showSettingsModal && <RoomSettingsModal />}
@@ -91,7 +92,7 @@ export const Chat = () => {
             showUserPreview
               ? "w-full absolute inset-0 lg:w-3/12 lg:relative"
               : "!hidden"
-          }  bg-[#1A1C26] lg:border-l-2 border-black`}
+          }  bg-accent lg:border-l-2 border-black`}
         >
           {showUserPreview && (
             <UserPreviewCard onRemoveUserPreview={handleRemoveUserPreview} />
@@ -165,7 +166,7 @@ export const UserPreviewCard: React.FC<ConversationProps> = ({
         </button>
       </div>
       <div className="flex flex-row justify-center p-4">
-        <img
+        <Img
           className="w-36 rounded-full "
           alt=""
           src={
@@ -192,7 +193,7 @@ export const UserPreviewCard: React.FC<ConversationProps> = ({
             {}
             <p className="pl-2">{currentUser?.name}'s Bio</p>
           </div>
-          <div className=" bg-[#1A1C26]">
+          <div className=" bg-accent">
             <p className="text-center  p-1 pt-2 font-poppins font-normal whitespace-normal overflow-auto break-words ">
               {currentUser?.bio ?? "NO"}
             </p>
@@ -216,7 +217,7 @@ export const UserPreviewCard: React.FC<ConversationProps> = ({
                             aria-label="View profile"
                             onClick={() => navigate(`/profile/${user.id}`)}
                           >
-                            <img
+                            <Img
                               className="w-12 rounded-full "
                               alt=""
                               src={user?.avatar?.medium ?? NullUser}
@@ -236,7 +237,7 @@ export const UserPreviewCard: React.FC<ConversationProps> = ({
             ) : (
               <>
                 <div className="text-center p-2">
-                  <span className="loading loading-spinner loading-lg"></span>
+                  <Spinner size="lg" className="text-primary" />
                 </div>
               </>
             )}
@@ -266,9 +267,10 @@ export const SelectedUserTile = ({
                 <div className="flex items-center space-x-3">
                   <div className="avatar">
                     <div className="mask mask-squircle w-12 h-12">
-                      <img
+                      <Img
                         src={userImage}
                         alt="Avatar Tailwind CSS Component"
+                        className="rounded-full"
                       />
                     </div>
                   </div>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export const Logo = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <Link
-      to={"Home"}
+      to={"home"}
       className="w-20 min-w-[5.5rem] max-w-[6rem] flex items-center justify-center"
     >
       <div className="hover:cursor-pointer">

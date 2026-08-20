@@ -67,7 +67,7 @@ export class FtStrategy extends PassportStrategy(Strategy, '42') {
         path: '/auth',
       });
       res.redirect(
-        process.env.FRONT_URL ? process.env.FRONT_URL + '/Home' : '/',
+        process.env.FRONT_URL ? process.env.FRONT_URL + '/home' : '/',
       );
       return cb(null, profile);
     }
@@ -77,16 +77,6 @@ export class FtStrategy extends PassportStrategy(Strategy, '42') {
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       Username: profile.username,
-    });
-
-    const avatarturl = `https://ui-avatars.com/api/?name=${new_user.firstName}-${new_user.lastName}&background=7940CF&color=fff`;
-    const result = await this.cloudinaryService.upload(
-      new_user.userId,
-      avatarturl,
-    );
-
-    await this.usersService.updateUser(new_user.userId, {
-      avatar: `v${result.version}/${result.public_id}.${result.format}`,
     });
 
     const tokens = await this.jwtUtils.generateTokens(
@@ -104,7 +94,7 @@ export class FtStrategy extends PassportStrategy(Strategy, '42') {
       ...baseCookieOptions,
       path: '/auth',
     });
-    res.redirect(process.env.FRONT_URL ? process.env.FRONT_URL + '/Home' : '/');
+    res.redirect(process.env.FRONT_URL ? process.env.FRONT_URL + '/home' : '/');
     return cb(null, profile);
   }
 }

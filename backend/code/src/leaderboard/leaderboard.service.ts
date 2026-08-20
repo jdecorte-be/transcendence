@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { buildAvatar } from 'src/profile/dto/profile.dto';
 
 @Injectable()
 export class LeaderBoardService {
@@ -42,10 +43,14 @@ export class LeaderBoardService {
     });
     const usersById = new Map(users.map((user) => [user.userId, user]));
 
-    const data = leaderboard.map((entry) => ({
-      ...usersById.get(entry.winner_id),
-      wins: entry._count.id,
-    }));
+    const data = leaderboard.map((entry) => {
+      const user = usersById.get(entry.winner_id);
+      return {
+        ...user,
+        avatar: buildAvatar(user?.avatar, user?.Username),
+        wins: entry._count.id,
+      };
+    });
 
     this.cache.set(cacheKey, { data, expiresAt: Date.now() + this.TTL_MS });
     return data;

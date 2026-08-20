@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Friend, Room, RoomMember, User } from '@prisma/client';
+import { buildBoringAvatarDataUri } from 'src/utils/boring-avatar';
 
 type ProfileDtoProps = Partial<User> &
   Partial<{
@@ -23,23 +24,26 @@ export type PICTURE = {
 
 const CLOUDINARY_BASE_URL =
   'https://res.cloudinary.com/ds2oaoirs/image/upload';
-const DEFAULT_AVATAR_VERSION = 'v1773493599';
-const DEFAULT_AVATAR_PUBLIC_ID =
-  'nest-blog/cmmqc4ofy0000w0fkx357af5q.png';
+
+const nameToSeed = (name?: NAME | string): string => {
+  if (!name) return 'guest';
+  return typeof name === 'string' ? name : `${name.first}-${name.last}`;
+};
 
 export const buildAvatar = (
   avatar?: string | null,
   name?: NAME | string,
 ): PICTURE => {
   if (!avatar || avatar.trim() === '') {
-    return {
-      thumbnail: `${CLOUDINARY_BASE_URL}/c_thumb,h_48,w_48/${DEFAULT_AVATAR_VERSION}/${DEFAULT_AVATAR_PUBLIC_ID}`,
-      medium: `${CLOUDINARY_BASE_URL}/c_thumb,h_72,w_72/${DEFAULT_AVATAR_VERSION}/${DEFAULT_AVATAR_PUBLIC_ID}`,
-      large: `${CLOUDINARY_BASE_URL}/c_thumb,h_128,w_128/${DEFAULT_AVATAR_VERSION}/${DEFAULT_AVATAR_PUBLIC_ID}`,
-    };
+    const dataUri = buildBoringAvatarDataUri(nameToSeed(name));
+    return { thumbnail: dataUri, medium: dataUri, large: dataUri };
   }
 
-  if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+  if (
+    avatar.startsWith('http://') ||
+    avatar.startsWith('https://') ||
+    avatar.startsWith('data:')
+  ) {
     return {
       thumbnail: avatar,
       medium: avatar,

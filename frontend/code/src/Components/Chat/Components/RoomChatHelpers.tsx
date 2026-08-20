@@ -1,4 +1,5 @@
 import React, { SetStateAction, useCallback, useEffect, useState } from "react";
+import { Spinner, Dots, PageLoading, Img } from "../../Loading";
 import { ChatType, useChatStore } from "../Controllers/RoomChatControllers";
 import {
   ChatGif,
@@ -29,7 +30,6 @@ import {
   updateRoomCall,
 } from "../Services/ChatServices";
 import toast from "react-hot-toast";
-import { Logo } from "../../Layout/Assets/Logo";
 import { useModalStore } from "../Controllers/LayoutControllers";
 import { useUserStore } from "../../../Stores/stores";
 import { formatTime } from "./tools/utils";
@@ -128,15 +128,15 @@ export const RoomChatPlaceHolder = () => {
       <OnlineNowUsers />
       <div className="flex-grow overflow-y-auto no-scrollbar">
         {ChatRoomsState.recentRooms.length > 0 ? (
-          <div className="bg-[#1A1C26] h-full">
+          <div className="bg-accent h-full">
             {ChatRoomsState.recentRooms.map((room) => (
               <div
                 key={room.id}
                 onClick={() => selectNewChat(room.id)}
-                className={`message-container flex   px-4 py-5  hover:bg-[#272932] items-center  ${
+                className={`message-container flex   px-4 py-5  hover:bg-base-300 items-center  ${
                   ChatRoomsState.selectedChatID === room.id
-                    ? "bg-[#272932]"
-                    : "bg-[#1A1C26]"
+                    ? "bg-base-300"
+                    : "bg-accent"
                 }
               
                 `}
@@ -180,15 +180,19 @@ export const RoomChatPlaceHolder = () => {
               className="flex justify-center items-center h-2 py-5 
 								"
             >
-              <span className="text-xs font-light font-poppins text-gray-400">
-                {EndOfFetching ? "No more Rooms" : "Loading..."}
-              </span>
+              {EndOfFetching ? (
+                <span className="text-xs font-light font-poppins text-gray-400">
+                  No more Rooms
+                </span>
+              ) : (
+                <Dots size="sm" className="text-gray-400" />
+              )}
             </div>
           </div>
         ) : (
-          <div className="p-3 text-center bg-[#1A1C26] h-full">
+          <div className="p-3 text-center bg-accent h-full">
             {isLoading === true ? (
-              <span className="loading loading-spinner loading-lg"></span>
+              <Spinner size="lg" className="text-primary" />
             ) : (
               <NullPlaceHolder message="You have No Rooms Yet!, Create One" />
             )}
@@ -270,8 +274,8 @@ export const CreateNewRoomModal = () => {
   };
 
   return (
-    <div className="modal w-screen" id="create-room-modal">
-      <div className="modal-box bg-[#1A1C26]  no-scrollbar w-[85%] md:w-[50%]">
+    <div className="modal backdrop-blur-sm w-screen" id="create-room-modal">
+      <div className="modal-box bg-accent/80 backdrop-blur-2xl border border-white/10 no-scrollbar w-[85%] md:w-[50%]">
         <div className="flex flex-col">
           <div className="flex flex-row justify-center">
             <p className="text-purple-500 font-poppins text-lg font-medium leading-normal">
@@ -286,7 +290,7 @@ export const CreateNewRoomModal = () => {
                 onChange={handleChange}
                 type="text"
                 placeholder="Set The Room Name"
-                className="input w-full shadow-xl max-w-lg bg-[#272932] placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
+                className="input w-full shadow-xl max-w-lg bg-base-300 placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
               />
             </div>
           </div>
@@ -335,7 +339,7 @@ export const CreateNewRoomModal = () => {
                   value={RoomPassword}
                   onChange={handlePasswordChange}
                   type="Password"
-                  className="input w-full shadow-xl max-w-lg bg-[#272932] placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
+                  className="input w-full shadow-xl max-w-lg bg-base-300 placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
                 />
               </div>
             </div>
@@ -374,7 +378,7 @@ export const FriendTile = (props: { user: RoomMember }) => {
       <div className="flex flex-row justify-between p-3">
         <div className="flex flex-row items-center space-x-3">
           <div className="pr-1">
-            <img
+            <Img
               className="w-12 rounded-full "
               alt=""
               src={user?.avatar?.medium}
@@ -420,7 +424,7 @@ export const BlockedFriendTile = (props: { user: RoomMember }) => {
       <div className="flex flex-row justify-between p-3">
         <div className="flex flex-row items-center space-x-3">
           <div className="pr-1">
-            <img
+            <Img
               className="w-12 rounded-full "
               alt=""
               src={user?.avatar?.medium}
@@ -516,8 +520,8 @@ export const BlockedUsersModal = () => {
   }, [LayoutState.showBlockedListModal]);
 
   return (
-    <div className="modal w-screen " id="blocked-users-modal">
-      <div className="modal-box bg-[#1A1C26]  no-scrollbar  w-[85%] md:w-[50%] ">
+    <div className="modal backdrop-blur-sm w-screen " id="blocked-users-modal">
+      <div className="modal-box bg-accent/80 backdrop-blur-2xl border border-white/10 no-scrollbar  w-[85%] md:w-[50%] ">
         <div className="flex flex-col">
           <div className="flex flex-row justify-center">
             <p className="text-purple-500 font-poppins text-lg font-medium leading-normal pb-2">
@@ -527,7 +531,7 @@ export const BlockedUsersModal = () => {
 
           {IsLoading === true ? (
             <div className="text-center p-2">
-              <span className="loading loading-spinner loading-lg"></span>
+              <Spinner size="lg" className="text-primary" />
             </div>
           ) : (
             <div className="max-h-[300px] overflow-y-auto no-scrollbar">
@@ -584,7 +588,7 @@ export const FriendStatusTile = (props: { user: RoomMember }) => {
         <div className="flex flex-row items-center space-x-3">
           <div className="pr-1">
             <a href={`/profile/${user?.id}`}>
-              <img
+              <Img
                 className="w-12 rounded-full "
                 alt=""
                 src={user?.avatar?.medium}
@@ -677,8 +681,8 @@ export const FriendsListModal = () => {
     // eslint-disable-next-line
   }, [LayoutState.showFriendsListModal]);
   return (
-    <div className="modal w-screen " id="friends-list-modal">
-      <div className="modal-box bg-[#1A1C26]  no-scrollbar  w-[85%] md:w-[50%] ">
+    <div className="modal backdrop-blur-sm w-screen " id="friends-list-modal">
+      <div className="modal-box bg-accent/80 backdrop-blur-2xl border border-white/10 no-scrollbar  w-[85%] md:w-[50%] ">
         <div className="flex flex-col">
           <div className="flex flex-row justify-center">
             <p className="text-purple-500 font-poppins text-lg font-medium leading-normal pb-2">
@@ -688,7 +692,7 @@ export const FriendsListModal = () => {
 
           {IsLoading === true ? (
             <div className="text-center p-2">
-              <span className="loading loading-spinner loading-lg"></span>
+              <Spinner size="lg" className="text-primary" />
             </div>
           ) : (
             <div className="max-h-[300px] overflow-y-auto no-scrollbar">
@@ -795,8 +799,8 @@ export const AddUsersModal = () => {
     // eslint-disable-next-line
   }, [LayoutState.showAddUsersModal]);
   return (
-    <div className="modal w-screen " id="add-users-modal">
-      <div className="modal-box bg-[#1A1C26]  no-scrollbar  w-[85%] md:w-[50%] ">
+    <div className="modal backdrop-blur-sm w-screen " id="add-users-modal">
+      <div className="modal-box bg-accent/80 backdrop-blur-2xl border border-white/10 no-scrollbar  w-[85%] md:w-[50%] ">
         <div className="flex flex-col">
           <div className="flex flex-row justify-center">
             <p className="text-purple-500 font-poppins text-lg font-medium leading-normal pb-2">
@@ -806,7 +810,7 @@ export const AddUsersModal = () => {
 
           {IsLoading === true ? (
             <div className="text-center p-2">
-              <span className="loading loading-spinner loading-lg"></span>
+              <Spinner size="lg" className="text-primary" />
             </div>
           ) : (
             <div className="max-h-[300px] overflow-y-auto no-scrollbar">
@@ -922,12 +926,12 @@ export const RoomSettingsModal = () => {
   };
 
   return (
-    <div className="modal w-screen" id="room-settings-modal">
-      <div className="modal-box bg-[#1A1C26] relative no-scrollbar w-[90%] md:w-[50%] ">
+    <div className="modal backdrop-blur-sm w-screen" id="room-settings-modal">
+      <div className="modal-box bg-accent/80 backdrop-blur-2xl border border-white/10 relative no-scrollbar w-[90%] md:w-[50%] ">
         <div className="flex flex-col">
           {TakingAction === true ? (
             <div className="bg-[color:var(--black)]/50 absolute inset-0 w-full h-full flex flex-col items-center justify-center z-50">
-              <span className="loading loading-infinity loading-lg bg-purple-500"></span>
+              <Spinner size="lg" className="text-primary" />
               <p>Processing...</p>
             </div>
           ) : (
@@ -945,7 +949,7 @@ export const RoomSettingsModal = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="Set The Room Name"
-                    className="input w-full shadow-xl max-w-lg bg-[#272932] placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
+                    className="input w-full shadow-xl max-w-lg bg-base-300 placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
                   />
                 </div>
               </div>
@@ -1004,7 +1008,7 @@ export const RoomSettingsModal = () => {
                   value={RoomPassword}
                   onChange={handlePasswordChange}
                   type="Password"
-                  className="input w-full shadow-xl max-w-lg bg-[#272932] placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
+                  className="input w-full shadow-xl max-w-lg bg-base-300 placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
                 />
               </div>
             </div>
@@ -1013,7 +1017,7 @@ export const RoomSettingsModal = () => {
 
           {LoadingUsers === true ? (
             <div className="text-center p-2">
-              <span className="loading loading-spinner loading-lg"></span>
+              <Spinner size="lg" className="text-primary" />
             </div>
           ) : (
             <div className="max-h-[300px]  overflow-y-auto no-scrollbar justify-center ">
@@ -1109,11 +1113,11 @@ export const RoomSettingsModal = () => {
                     return (
                       <div
                         key={user.id}
-                        className="flex flex-row justify-between  bg-[#1A1C26] p-3 border-gray-600 "
+                        className="flex flex-row justify-between  bg-accent p-3 border-gray-600 "
                       >
                         <div className="flex flex-row items-center space-x-3">
                           <div className="pr-1">
-                            <img
+                            <Img
                               className="w-12 rounded-full "
                               alt=""
                               src={user.avatar.medium}
@@ -1140,7 +1144,7 @@ export const RoomSettingsModal = () => {
                           </label>
                           <ul
                             tabIndex={0}
-                            className="p-2  z-101 absolute right-5 bottom-44 shadow menu dropdown-content bg-base-100 rounded-box w-40"
+                            className="p-2  z-101 absolute right-5 bottom-44 shadow-xl menu dropdown-content bg-base-100/85 backdrop-blur-xl border border-white/10 rounded-box w-40"
                           >
                             <li
                               role="button"
@@ -1148,7 +1152,7 @@ export const RoomSettingsModal = () => {
                               onClick={handleBanToggle}
                               onKeyDown={onEnterOrSpace(handleBanToggle)}
                             >
-                              <span className="hover:bg-[#7940CF]">
+                              <span className="hover:bg-primary">
                                 {user.isBaned ? "UnBan" : "Ban"}
                               </span>
                             </li>
@@ -1160,7 +1164,7 @@ export const RoomSettingsModal = () => {
                                 onClick={handleMute}
                                 onKeyDown={onEnterOrSpace(handleMute)}
                               >
-                                <span className="hover:bg-[#7940CF]">
+                                <span className="hover:bg-primary">
                                   mute
                                 </span>
                               </li>
@@ -1172,7 +1176,7 @@ export const RoomSettingsModal = () => {
                               onClick={handleKick}
                               onKeyDown={onEnterOrSpace(handleKick)}
                             >
-                              <span className="hover:bg-[#7940CF]">kick</span>
+                              <span className="hover:bg-primary">kick</span>
                             </li>
                             <li
                               role="button"
@@ -1180,7 +1184,7 @@ export const RoomSettingsModal = () => {
                               onClick={handleSetAdmin}
                               onKeyDown={onEnterOrSpace(handleSetAdmin)}
                             >
-                              <span className="hover:bg-[#7940CF]">
+                              <span className="hover:bg-primary">
                                 Set as admin
                               </span>
                             </li>
@@ -1343,8 +1347,8 @@ export const ExploreRoomsModal = () => {
   }, [modalState.showExploreModal, inView]);
 
   return (
-    <div className="modal w-screen " id="explorer-modal">
-      <div className="modal-box bg-[#1A1C26]  no-scrollbar  w-[85%] md:w-[50%] ">
+    <div className="modal backdrop-blur-sm w-screen " id="explorer-modal">
+      <div className="modal-box bg-accent/80 backdrop-blur-2xl border border-white/10 no-scrollbar  w-[85%] md:w-[50%] ">
         <div className="flex flex-col">
           <div className="flex flex-row justify-center">
             <p className="text-purple-500 font-poppins text-lg font-medium leading-normal m-2">
@@ -1353,7 +1357,7 @@ export const ExploreRoomsModal = () => {
           </div>
           {isLoading === true ? (
             <div className="text-center p-2">
-              <span className="loading loading-spinner loading-lg"></span>
+              <Spinner size="lg" className="text-primary" />
             </div>
           ) : (
             <div className="max-h-[320px] overflow-y-auto no-scrollbar">
@@ -1368,7 +1372,7 @@ export const ExploreRoomsModal = () => {
                     <div
                       key={room.id}
                       className={
-                        "flex flex-col  bg-[#272932] p-4 rounded-md m-2   " +
+                        "flex flex-col  bg-base-300 p-4 rounded-md m-2   " +
                         (SelectedRoomID === room.id
                           ? "border-2 border-purple-500"
                           : "")
@@ -1392,9 +1396,13 @@ export const ExploreRoomsModal = () => {
                     ref={ref}
                     className="flex justify-center items-center h-2 py-2"
                   >
-                    <span className="text-xs font-light font-poppins text-gray-400">
-                      {EndOfFetching ? "No more Rooms" : "Loading..."}
-                    </span>
+                    {EndOfFetching ? (
+                      <span className="text-xs font-light font-poppins text-gray-400">
+                        No more Rooms
+                      </span>
+                    ) : (
+                      <Dots size="sm" className="text-gray-400" />
+                    )}
                   </div>
                 </>
               ) : (
@@ -1411,7 +1419,7 @@ export const ExploreRoomsModal = () => {
                 value={RoomPassword}
                 onChange={(event) => setPassword(event.target.value)}
                 type="Password"
-                className="input w-full shadow-xl max-w-lg bg-[#272932] placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
+                className="input w-full shadow-xl max-w-lg bg-base-300 placeholder:text-gray-400 font-poppins text-base font-normal leading-normal"
               />
             </div>
           </div>
@@ -1485,8 +1493,8 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="modal-box bg-[#1A1C26] rounded-lg shadow-white  p-5 absolute">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30 backdrop-blur-sm">
+          <div className="modal-box bg-accent/80 backdrop-blur-2xl border border-white/10 rounded-lg p-5 absolute">
             <h3 className="text-lg font-semibold">Confirmation</h3>
             <p>Are you sure you want to proceed?</p>
             <div className="mt-4 flex justify-center">
@@ -1652,14 +1660,9 @@ export const ShowLogoModal = () => {
   const isLoading = useChatStore((state) => state.isLoading);
 
   return isLoading === true ? (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-[rgba(0,0,0,0.7)]">
-      <div className="modal-box bg-[#2d2f3b] rounded-lg shadow-white p-5 border-2 border-purple-500 text-center">
-        <div>
-          <div className="pl-48 p-4">
-            <Logo />
-          </div>
-          <p>Loading...</p>
-        </div>
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm">
+      <div className="modal-box bg-base-300/80 backdrop-blur-2xl rounded-lg p-8 border-2 border-primary/50">
+        <PageLoading />
       </div>
     </div>
   ) : (

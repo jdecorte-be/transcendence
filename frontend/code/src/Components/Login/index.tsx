@@ -46,8 +46,15 @@ export const Login = () => {
   }, []);
   return (
     <>
-      <div className="overflow-hidden flex flex-col items-center justify-center h-screen bg-base-100">
-        <div className="flex flex-col items-center gap-y-20">
+      <div className="relative overflow-hidden flex flex-col items-center justify-center h-screen bg-base-100">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+        >
+          <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-primary/25 blur-[120px] animate-float" />
+          <div className="absolute bottom-0 -right-20 w-96 h-96 rounded-full bg-primary/15 blur-[130px] animate-float [animation-delay:1.5s]" />
+        </div>
+        <div className="relative flex flex-col items-center gap-y-20 backdrop-blur-2xl bg-base-200/20 border border-white/5 rounded-3xl px-16 py-12">
           <div className="flex flex-col justify-center animate-fade-in-up">
             <img src={pingpong} alt="Logo" className="animate-float" />
           </div>

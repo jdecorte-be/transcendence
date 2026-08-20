@@ -22,7 +22,7 @@ export const Modal = () => {
         msg === 0 && setOpacity("opacity-0");
         setTimer(msg / 1000);
         if (timer === 5) {
-          navigate(`/Game/${gameid}`);
+          navigate(`/game/${gameid}`);
         }
       });
       socketStore.socket?.on("players", (players: any) => {
@@ -74,8 +74,8 @@ export const Modal = () => {
 
   return (
     <>
-      <div className={`modal transition-opacity duration-500 ease-in-out ${opacity}`}>
-        <div className="modal-box border border-base-300 animate-scale-in">
+      <div className={`modal backdrop-blur-sm transition-opacity duration-500 ease-in-out ${opacity}`}>
+        <div className="modal-box bg-base-100/70 backdrop-blur-2xl border border-white/10 animate-scale-in">
           <h3 className="text-lg font-bold">Game Starting .... </h3>
           <p
             key={timer}
@@ -85,8 +85,8 @@ export const Modal = () => {
           </p>
         </div>
       </div>
-      <div className={`modal transition-opacity duration-500 ease-in-out ${resOpacity}`}>
-        <div className="modal-box border border-base-300 animate-scale-in">
+      <div className={`modal backdrop-blur-sm transition-opacity duration-500 ease-in-out ${resOpacity}`}>
+        <div className="modal-box bg-base-100/70 backdrop-blur-2xl border border-white/10 animate-scale-in">
           <h3 className="text-lg font-bold">You {status}</h3>
           <p className="py-4 flex items-center justify-center text-xl font-poppins font-bold">
             {result}{" "}

@@ -32,15 +32,15 @@ import { InvitationGame } from "./Assets/Invitationmodale";
 import { useGameState } from "../Game/States/GameState";
 import { useModalStore } from "../Chat/Controllers/LayoutControllers";
 const routes = [
-  { path: "Profile/:id" },
-  { path: "Dm/:id" },
-  { path: "Settings" },
-  { path: "Home" },
-  { path: "Chat" },
-  { path: "Play" },
-  { path: "Play/Bot" },
+  { path: "profile/:id" },
+  { path: "dm/:id" },
+  { path: "settings" },
+  { path: "home" },
+  { path: "chat" },
+  { path: "play" },
+  { path: "play/bot" },
   { path: "Pure" },
-  { path: "Game/:id" },
+  { path: "game/:id" },
 ];
 
 const useCurrentPath = () => {
@@ -57,12 +57,12 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
   const invitationGameRef = useRef<HTMLDialogElement>(null);
   const path: string = useCurrentPath();
   const location = useLocation();
-  const isPlayRoute = path === "Play" || path === "Play/Bot";
+  const isPlayRoute = path === "play" || path === "play/bot";
 
   const modalState = useModalStore();
 
   useEffect(() => {
-    if (gameStore.end === false && path !== "Game/:id") {
+    if (gameStore.end === false && path !== "game/:id") {
       socketStore.socket?.emit("leave");
       gameStore.setEnd(true);
     }
@@ -117,12 +117,20 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
       ) : (
         <div
           data-theme="mytheme"
-          className={`h-screen max-h-screen overflow-x-hidden ${
+          className={`relative h-screen max-h-screen overflow-x-hidden bg-base-100 ${
             !user.profileComplet ? "blur-lg" : ""
           }`}
         >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden"
+          >
+            <div className="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-primary/25 blur-[120px] animate-float" />
+            <div className="absolute top-1/3 -right-24 w-[28rem] h-[28rem] rounded-full bg-primary/15 blur-[140px] animate-float [animation-delay:1.5s]" />
+            <div className="absolute bottom-0 left-1/3 w-80 h-80 rounded-full bg-info/10 blur-[120px] animate-float [animation-delay:3s]" />
+          </div>
           <Modal />
-          <header className="flex flex-row w-full h-16 min-h-16 bg-base-200 border-b border-base-300">
+          <header className="relative z-40 flex flex-row w-full h-16 min-h-16 bg-base-200/70 backdrop-blur-xl border-b border-base-300/60">
             <div className="flex justify-start items-center z-50 h-full w-full">
               <ShowLogoModal />
               {modalState.showBlockedListModal && <BlockedUsersModal />}
@@ -135,20 +143,20 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
               <Avatar picture={`${user?.picture?.medium}`} />
             </div>
           </header>
-          <div className="flex bg-base-200 h-[calc(100vh-4rem)]">
+          <div className="relative flex h-[calc(100vh-4rem)]">
             <nav
               aria-label="Primary"
-              className="sm:flex flex-col hidden justify-around items-stretch h-full bg-base-200 border-r border-base-300 md:pt-20 w-20 min-w-[5.5rem] max-w-[6rem]"
+              className="sm:flex flex-col hidden justify-around items-stretch h-full bg-base-200/60 backdrop-blur-xl border-r border-base-300/60 md:pt-20 w-20 min-w-[5.5rem] max-w-[6rem]"
             >
               <div className="flex flex-col justify-evenly content-start gap-y-10 pb-44">
-                <Dash selected={path === "Home"} className="mx-auto" />
+                <Dash selected={path === "home"} className="mx-auto" />
                 <Game selected={isPlayRoute} className="mx-auto" />
-                <Message selected={path === "Chat"} className="mx-auto" />
+                <Message selected={path === "chat"} className="mx-auto" />
                 <Profile
-                  selected={path === "Profile/:id"}
+                  selected={path === "profile/:id"}
                   className="mx-auto"
                 />
-                <Settings selected={path === "Settings"} className="mx-auto" />
+                <Settings selected={path === "settings"} className="mx-auto" />
               </div>
               <div className="flex flex-col justify-start">
                 <Out className="mx-auto" />
@@ -156,19 +164,19 @@ export const Layout: FC<PropsWithChildren> = (): JSX.Element => {
             </nav>
             <nav
               aria-label="Mobile"
-              className=" h-[8vh] fixed bottom-0 sm:hidden btm-nav bg-base-200 border-t border-base-300 flex justify-end z-50"
+              className=" h-[8vh] fixed bottom-0 sm:hidden btm-nav bg-base-200/70 backdrop-blur-xl border-t border-base-300/60 flex justify-end z-50"
             >
-              <Dash selected={path === "Home"} />
+              <Dash selected={path === "home"} />
               <Game selected={isPlayRoute} />
-              <Message selected={path === "Chat"} />
-              <Profile selected={path === "Profile/:id"} />
-              <Settings selected={path === "Settings"} />
+              <Message selected={path === "chat"} />
+              <Profile selected={path === "profile/:id"} />
+              <Settings selected={path === "settings"} />
             </nav>
             <main
-              className="flex-1 min-w-0 w-full z-10 h-full bg-accent sm:rounded-tl-2xl overflow-auto no-scrollbar"
+              className="flex-1 min-w-0 w-full z-10 h-full bg-accent/85 backdrop-blur-md sm:rounded-tl-2xl overflow-auto no-scrollbar"
               id="scrollTarget"
             >
-              <div key={location.pathname} className="animate-fade-in">
+              <div key={location.pathname} className="h-full animate-fade-in">
                 <Outlet />
               </div>
             </main>

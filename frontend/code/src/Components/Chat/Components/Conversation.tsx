@@ -29,6 +29,7 @@ import { InvitationWaiting } from "../../Layout/Assets/Invitationacceptance";
 
 import { useInView } from "react-intersection-observer";
 import { classNames, onEnterOrSpace } from "../../../Utils/helpers";
+import { Spinner, Dots, Img } from "../../Loading";
 
 export interface ChatPaceHolderProps {
   username: string;
@@ -84,7 +85,7 @@ export const CurrentUserMessage = forwardRef<any, Message>((props, ref) => {
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
           {props.avatar?.medium ? (
-            <img src={props.avatar.medium} alt="" />
+            <Img src={props.avatar.medium} alt="" className="rounded-full" />
           ) : (
             <div className="w-10 h-10 bg-violet-400 rounded-full" />
           )}
@@ -210,7 +211,7 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
 
   return (
     <>
-      <div className="flex flex-row justify-between bg-[#1A1C26] px-4 py-2 border-b-2 border-base-200">
+      <div className="flex flex-row justify-between bg-accent px-4 py-2 border-b-2 border-base-200">
         <div className="flex flex-row items-center">
           <div className="flex items-center justify-center h-full mr-4 lg:hidden">
             <button className="w-6 h-10" onClick={() => toggleChatRooms()}>
@@ -227,7 +228,7 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
               }
             }}
           >
-            <img
+            <Img
               className="w-12 rounded-full"
               alt=""
               src={
@@ -277,10 +278,10 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
                 onClick={handleBlock}
                 onKeyDown={onEnterOrSpace(handleBlock)}
               >
-                <span className="hover:bg-[#7940CF]">Block</span>
+                <span className="hover:bg-primary">Block</span>
               </li>
               <li
-                className="hover:bg-[#7940CF] hover:rounded"
+                className="hover:bg-primary hover:rounded"
                 role="button"
                 tabIndex={0}
                 onClick={handleInviteToGame}
@@ -295,7 +296,7 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
                 onKeyDown={onEnterOrSpace(handleToggleUserInfo)}
                 className="hidden md:block"
               >
-                <span className="hover:bg-[#7940CF]">
+                <span className="hover:bg-primary">
                   {LayoutState.showPreviewCard === false
                     ? "Show User Info"
                     : "hide User Info"}
@@ -323,7 +324,7 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
                     onClick={handleOpenRoomSettings}
                     onKeyDown={onEnterOrSpace(handleOpenRoomSettings)}
                   >
-                    <span className="hover:bg-[#7940CF]">
+                    <span className="hover:bg-primary">
                       Edit Room Settings
                     </span>
                   </li>
@@ -333,7 +334,7 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
                     onClick={handleOpenAddUsers}
                     onKeyDown={onEnterOrSpace(handleOpenAddUsers)}
                   >
-                    <span className="hover:bg-[#7940CF]">Add Users</span>
+                    <span className="hover:bg-primary">Add Users</span>
                   </li>
                 </>
               )}
@@ -345,7 +346,7 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
                 onKeyDown={onEnterOrSpace(handleToggleRoomInfo)}
                 className="hidden md:block"
               >
-                <span className="hover:bg-[#7940CF]">
+                <span className="hover:bg-primary">
                   {LayoutState.showPreviewCard === false
                     ? "Show Room Info"
                     : "hide Room Info"}
@@ -357,7 +358,7 @@ export const ConversationHeader: React.FC<ConversationProps> = ({
                 onClick={handleLeaveRoom}
                 onKeyDown={onEnterOrSpace(handleLeaveRoom)}
               >
-                <span className="hover:bg-[#7940CF]">leave The Room</span>
+                <span className="hover:bg-primary">leave The Room</span>
               </li>
             </ul>
             <ConfirmationModal
@@ -523,13 +524,13 @@ export const Conversation: React.FC<ConversationProps> = ({
               ref={ref}
               className="w-full flex items-center justify-center p-2"
             >
-              {IsLoading ? "Loading..." : "Load more"}
+              {IsLoading ? <Dots size="sm" className="text-primary" /> : "Load more"}
             </div>
           )}
         {IsLoading &&
           (!chatState.currentMessages || !chatState.currentMessages.length) && (
             <div className="text-center justify-center flex flex-col items-center w-full h-full absolute inset-0 bg-gray-900">
-              <span className="loading loading-spinner loading-lg"></span>
+              <Spinner size="lg" className="text-primary" />
             </div>
           )}
       </div>
@@ -610,14 +611,14 @@ const ConversationInput = (props: ConversationInputProps) => {
           placeholder="Type Message "
           className={`input w-full ${
             FailToSendMessage && " border-2 border-red-400 "
-          } shadow-md max-w-lg bg-[#1A1C26]  placeholder:text-gray-400 placeholder:text-xs md:placeholder:text-base font-poppins text-base font-normal leading-normal `}
+          } shadow-md max-w-lg bg-accent  placeholder:text-gray-400 placeholder:text-xs md:placeholder:text-base font-poppins text-base font-normal leading-normal `}
         />
 
         <button
           onClick={() => {
             sendMessage();
           }}
-          className="btn  ml-4 btn-square  bg-[#8C67F6] hover:bg-green-600"
+          className="btn  ml-4 btn-square  bg-primary hover:bg-green-600"
         >
           <img src={Send} alt="" />
         </button>

@@ -5,10 +5,11 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { BiSearch, BiX, BiLoaderAlt } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { BiSearch, BiX } from "react-icons/bi";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../../Api/base";
 import toast from "react-hot-toast";
+import { Spinner, Img } from "../../Loading";
 function useDebounce<T>(value: T, delay?: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -31,6 +32,7 @@ export const Search = () => {
   const [result, setResult] = useState<any[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const navigate = useNavigate();
   const onSearchTextChange = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchText(e.target.value);
 
@@ -84,15 +86,23 @@ export const Search = () => {
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Escape") return;
-    e.stopPropagation();
-    searchText ? clear() : e.currentTarget.blur();
+    if (e.key === "Escape") {
+      e.stopPropagation();
+      searchText ? clear() : e.currentTarget.blur();
+      return;
+    }
+    if (e.key === "Enter" && open && result.length > 0) {
+      e.preventDefault();
+      const firstResult = result[0];
+      clear();
+      navigate(`profile/${firstResult.id}`);
+    }
   };
 
   return (
     <div
       ref={containerRef}
-      className="dropdown hover:cursor-pointer hidden  sm:flex sm:items-center absolute w-80 right-52"
+      className="dropdown hover:cursor-pointer hidden sm:flex sm:items-center absolute w-80 right-52"
     >
       <input
         tabIndex={0}
@@ -107,7 +117,7 @@ export const Search = () => {
 
       <div className="relative right-14 top-0 w-12 flex items-center">
         {loading ? (
-          <BiLoaderAlt size="1.4em" className="animate-spin" />
+          <Spinner size="sm" className="text-primary" />
         ) : searchText ? (
           <button
             type="button"
@@ -123,7 +133,7 @@ export const Search = () => {
       </div>
       <ul
         tabIndex={0}
-        className={`dropdown-content z-[9999] menu p-2 shadow bg-base-200 border border-base-300 rounded-box w-full top-12 ${
+        className={`dropdown-content z-[9999] menu p-2 shadow bg-base-200 border border-base-300 rounded-box w-full top-12 max-h-96 overflow-y-auto ${
           open ? "animate-scale-in origin-top" : "hidden"
         }`}
       >
@@ -135,15 +145,15 @@ export const Search = () => {
           ) : (
             result.map((item: any, index: number) => {
               return (
-                <Link key={index} to={`Profile/${item.id}`} onClick={clear}>
+                <Link key={index} to={`profile/${item.id}`} onClick={clear}>
                   <li className="hover:bg-primary/10 hover:rounded-xl hover:translate-x-1 transition-all duration-150 h-full w-full z-[10000]">
-                    <div className="flex items-center gap-2">
-                      <div className="avatar">
-                        <div className="w-auto rounded-full gap-4 ring ring-primary ring-offset-base-100 ring-offset-2">
-                          <img alt="" src={item.avatar.thumbnail} />
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="avatar shrink-0">
+                        <div className="w-10 rounded-full ring ring-primary ring-offset-base-200 ring-offset-2">
+                          <Img alt="" src={item.avatar.thumbnail} className="rounded-full" />
                         </div>
                       </div>
-                      <span>
+                      <span className="truncate">
                         {item.name.first} {item.name.last}
                       </span>
                     </div>

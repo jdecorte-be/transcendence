@@ -53,7 +53,7 @@ export const UserToUserChat = () => {
         >
           <Conversation onRemoveUserPreview={handleRemoveUserPreview} />
         </div>
-        <div className={` ${showUserPreview ? "w-4/12" : ""}  bg-[#1A1C26]`}>
+        <div className={` ${showUserPreview ? "w-4/12" : ""}  bg-accent`}>
           {showUserPreview && (
             <UserPreviewCard onRemoveUserPreview={handleRemoveUserPreview} />
           )}

@@ -7,7 +7,7 @@ type GameProps = React.HTMLAttributes<HTMLDivElement> & {
 
 export const Game = ({ selected, className, ...props }: GameProps) => {
   return (
-    <Link to={"Play"}>
+    <Link to={"play"}>
       <div
         className={classNames(
           "h-10 w-10 rounded-xl flex justify-center items-center hover:cursor-pointer hover:bg-primary/10 text-base-content/50 transition-all duration-200 hover:scale-110 active:scale-95",

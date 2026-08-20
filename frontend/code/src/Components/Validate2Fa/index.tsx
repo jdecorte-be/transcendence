@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "../../Api/base";
 import toast from "react-hot-toast";
-import { classNames } from "../../Utils/helpers";
+import { PageLoading } from "../Loading";
 
 export const Validate2Fa = () => {
   const params = useParams();
@@ -23,13 +23,16 @@ export const Validate2Fa = () => {
     // eslint-disable-next-line
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <PageLoading />
+      </div>
+    );
+  }
+
   return (
-    <div
-      className={classNames(
-        "w-full h-screen flex items-center justify-center",
-        isLoading && "!hidden",
-      )}
-    >
+    <div className="w-full h-screen flex items-center justify-center">
       <div className="flex flex-col gap-6 justify-center items-center content-center w-full">
         <div className="flex justify-center items-center gap-x-6">
           <div className="flex flex-col justify-between items-center p-10 h-60 w-60 rounded-2xl border border-base-300 bg-accent">
@@ -67,7 +70,7 @@ export const Validate2Fa = () => {
                     otp: TOTPCode,
                     tfaToken: params.token,
                   });
-                  navigate("/Home");
+                  navigate("/home");
                 } catch (e: any) {
                   toast.error(e.response.data.message);
                 }

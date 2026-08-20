@@ -4,7 +4,7 @@ import { History } from "./History";
 import Hero from "./assets/Hero.gif";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Load } from "../Loading/";
+import { Spinner, Skeleton, Img } from "../Loading/";
 import Newbie from "../Badges/Newbie.svg";
 import Master from "../Badges/Master.svg";
 import Ultimate from "../Badges/Ultimate.svg";
@@ -258,11 +258,12 @@ export const Profile = () => {
           <div className="avatar absolute z-40 -bottom-6 sm:-bottom-8 md:-bottom-10 left-6 sm:left-12 animate-scale-in">
             <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full ring ring-neutral flex justify-center items-center ring-offset-base-100 ring-offset-1 transition-transform duration-300 hover:scale-105">
               {isLoadingProfile ? (
-                <div className="w-full h-full rounded-full bg-base-300/70 animate-pulse" />
+                <Skeleton className="w-full h-full rounded-full" />
               ) : avatarSrc ? (
-                <img
+                <Img
                   src={avatarSrc}
                   alt="profile avatar"
+                  className="rounded-full"
                   onError={() => {
                     const first = profile?.name?.first ?? "Player";
                     const last = profile?.name?.last ?? "";
@@ -276,7 +277,7 @@ export const Profile = () => {
                 />
               ) : (
                 <div className=" top-14">
-                  <Load />
+                  <Spinner />
                 </div>
               )}
             </div>
@@ -286,13 +287,13 @@ export const Profile = () => {
           <div className="flex flex-col gap-4 animate-fade-in-up">
             {isLoadingProfile ? (
               <div className="flex flex-col gap-3">
-                <div className="h-5 w-32 rounded-full bg-base-300/70 animate-pulse" />
+                <Skeleton className="h-5 w-32 rounded-full" />
                 <div className="flex gap-2">
-                  <div className="h-7 w-20 rounded-full bg-base-300/70 animate-pulse" />
-                  <div className="h-7 w-20 rounded-full bg-base-300/70 animate-pulse" />
-                  <div className="h-7 w-24 rounded-full bg-base-300/70 animate-pulse" />
+                  <Skeleton className="h-7 w-20 rounded-full" />
+                  <Skeleton className="h-7 w-20 rounded-full" />
+                  <Skeleton className="h-7 w-24 rounded-full" />
                 </div>
-                <div className="h-20 w-full max-w-2xl rounded-2xl bg-base-300/70 animate-pulse" />
+                <Skeleton className="h-20 w-full max-w-2xl rounded-2xl" />
               </div>
             ) : (
               <>
@@ -347,8 +348,8 @@ export const Profile = () => {
             <div className="flex flex-col gap-3">
               {isLoadingProfile && (
                 <div className="flex flex-col gap-3">
-                  <div className="h-10 w-full rounded-xl bg-base-300/70 animate-pulse" />
-                  <div className="h-10 w-full rounded-xl bg-base-300/70 animate-pulse" />
+                  <Skeleton className="h-10 w-full rounded-xl" />
+                  <Skeleton className="h-10 w-full rounded-xl" />
                 </div>
               )}
               {params.id !== "me" &&
@@ -443,7 +444,7 @@ export const Profile = () => {
                               avatar: profile?.picture,
                               bio: profile?.bio,
                             });
-                            navigate(`/Dm/${res?.data.id}`);
+                            navigate(`/dm/${res?.data.id}`);
                           } else {
                             toast.error(
                               "You Can't Send Message To this User For Now, try Again later",
@@ -507,7 +508,7 @@ export const Profile = () => {
                 )}
               {isSelf && (
                 <div className=" flex items-center gap-3">
-                  <Link to={"/Settings"} className="flex-1">
+                  <Link to={"/settings"} className="flex-1">
                     <button
                       className={`btn btn-primary text-neutral ${disabled} flex-row flex-nowrap whitespace-nowrap w-full`}
                     >
@@ -554,9 +555,9 @@ export const Profile = () => {
             <div className="flex items-center gap-3 bg-accent/70 border border-base-300/50 rounded-2xl p-3 justify-center animate-fade-in-up [animation-delay:200ms]">
               {isLoadingProfile ? (
                 <>
-                  <div className="h-16 w-16 rounded-xl bg-base-300/70 animate-pulse" />
-                  <div className="h-16 w-16 rounded-xl bg-base-300/70 animate-pulse" />
-                  <div className="h-16 w-16 rounded-xl bg-base-300/70 animate-pulse" />
+                  <Skeleton className="h-16 w-16 rounded-xl" />
+                  <Skeleton className="h-16 w-16 rounded-xl" />
+                  <Skeleton className="h-16 w-16 rounded-xl" />
                 </>
               ) : (
                 <>

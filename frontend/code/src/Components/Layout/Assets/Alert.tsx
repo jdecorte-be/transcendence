@@ -8,6 +8,7 @@ import { useInView } from "react-intersection-observer";
 import { useSocketStore } from "../../Chat/Services/SocketsServices";
 import { MdOutlineReadMore } from "react-icons/md";
 import { closeWhite } from "../../Chat/Components/tools/Assets";
+import { Dots, Img } from "../../Loading";
 
 export const Alert = () => {
   const user = useUserStore();
@@ -51,7 +52,7 @@ export const Alert = () => {
                   >
                     <div className="flex flex-row justify-between  ">
                       <div className="  flex flex-row ">
-                        <img
+                        <Img
                           alt="avatar"
                           className="w-10 h-10 rounded-full"
                           src={notification.entity.avatar.medium}
@@ -136,7 +137,7 @@ export const Alert = () => {
           </label>
           <div
             tabIndex={1}
-            className="dropdown-content z-[60] card card-compact w-80 shadow bg-base-200 text-neutral relative right-0 top-16 overflow-hidden animate-scale-in origin-top-right"
+            className="dropdown-content z-[60] card card-compact w-80 shadow-xl bg-base-200/80 backdrop-blur-xl border border-white/10 text-neutral relative right-0 top-16 overflow-hidden animate-scale-in origin-top-right"
           >
             <div className="card-body !p-0 !gap-0">
               <div className="flex flex-row justify-between items-center">
@@ -154,7 +155,7 @@ export const Alert = () => {
                   </div>
                 )}
               </div>
-              <ul className="bg-accent/80 border-t-2 border-base-300 h-60 overflow-auto">
+              <ul className="bg-accent/60 backdrop-blur-md border-t-2 border-base-300/60 h-60 overflow-auto">
                 {user.notifications.map((notification: any) => (
                   <li
                     key={notification.id}
@@ -174,7 +175,7 @@ export const Alert = () => {
                       }
                     }}
                   >
-                    <img
+                    <Img
                       src={`https://res.cloudinary.com/trandandan/image/upload/c_thumb,h_48,w_48/${notification.actor.avatar}`}
                       alt=""
                       className="rounded-full"
@@ -195,9 +196,13 @@ export const Alert = () => {
                   ref={ref}
                   className="flex justify-center items-center h-2 py-5 border-t border-base-300"
                 >
-                  <span className="text-xs text-base-content/50">
-                    {notificationDone ? "No more notifications" : "Loading..."}
-                  </span>
+                  {notificationDone ? (
+                    <span className="text-xs text-base-content/50">
+                      No more notifications
+                    </span>
+                  ) : (
+                    <Dots size="sm" className="text-base-content/50" />
+                  )}
                 </div>
               </ul>
             </div>

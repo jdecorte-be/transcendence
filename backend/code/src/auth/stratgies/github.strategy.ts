@@ -75,7 +75,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
         path: '/auth',
       });
       res.redirect(
-        process.env.FRONT_URL ? process.env.FRONT_URL + '/Home' : '/',
+        process.env.FRONT_URL ? process.env.FRONT_URL + '/home' : '/',
       );
       return cb(null, profile);
     }
@@ -94,17 +94,16 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       Username: username,
     });
 
-    const avatarUrl =
-      profile.photos?.[0]?.value ||
-      `https://ui-avatars.com/api/?name=${firstName}-${lastName}&background=7940CF&color=fff`;
-    const result = await this.cloudinaryService.upload(
-      new_user.userId,
-      avatarUrl,
-    );
-
-    await this.usersService.updateUser(new_user.userId, {
-      avatar: `v${result.version}/${result.public_id}.${result.format}`,
-    });
+    const avatarUrl = profile.photos?.[0]?.value;
+    if (avatarUrl) {
+      const result = await this.cloudinaryService.upload(
+        new_user.userId,
+        avatarUrl,
+      );
+      await this.usersService.updateUser(new_user.userId, {
+        avatar: `v${result.version}/${result.public_id}.${result.format}`,
+      });
+    }
 
     const newTokenSubject =
       new_user.email || new_user.Username || new_user.userId;
@@ -123,7 +122,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       ...baseCookieOptions,
       path: '/auth',
     });
-    res.redirect(process.env.FRONT_URL ? process.env.FRONT_URL + '/Home' : '/');
+    res.redirect(process.env.FRONT_URL ? process.env.FRONT_URL + '/home' : '/');
     return cb(null, profile);
   }
 }

@@ -22,7 +22,7 @@ export const Home = (): JSX.Element => {
           </div>
 
           <Link
-            to={"/Play"}
+            to={"/play"}
             className="animate-fade-in-up [animation-delay:250ms] transition-all duration-300 flex justify-center items-center px-4 sm:px-8 py-2 sm:py-4 rounded-xl bg-primary hover:brightness-110 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 active:translate-y-0 active:scale-95"
           >
             <span className="text-primary-content font-poppins text-xs xl:text-[0.99vw]">

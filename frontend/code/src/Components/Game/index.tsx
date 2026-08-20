@@ -8,6 +8,7 @@ import { useGameState } from "./States/GameState";
 import { useSocketStore } from "../Chat/Services/SocketsServices";
 import { useNavigate } from "react-router-dom";
 import { useDocumentTitle } from "../../Utils/helpers";
+import { Img } from "../Loading";
 
 const DURATION = 12;
 type Cords = {
@@ -159,7 +160,7 @@ export const Game = () => {
     <div className="flex flex-col gap-10 justify-start md:justify-center md:items-center items-center pt-12 md:pt-0  h-full w-full">
       <div className="flex items-center justify-center gap-x10 w-full xl:pt-4">
         <div className="flex items-center justify-center w-1/4 gap-6">
-          <img
+          <Img
             alt=""
             className="rounded-full w-auto h-auto max-w-[10vw] md:max-w-[20vw]"
             src={`https://res.cloudinary.com/trandandan/image/upload/c_thumb,h_72,w_72/${gameState?.p1?.avatar}`}
@@ -172,7 +173,7 @@ export const Game = () => {
           <span className="font-lexend font-extrabold text-[4vw] xl:text-[2vw] text-current">
             {gameState?.ball.p2Score}
           </span>
-          <img
+          <Img
             alt=""
             className="rounded-full w-auto h-auto max-w-[10vw] md:max-w-[20vw]"
             src={`https://res.cloudinary.com/trandandan/image/upload/c_thumb,h_72,w_72/${gameState?.p2?.avatar}`}

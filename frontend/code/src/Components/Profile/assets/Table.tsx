@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Loading } from "../../Loading/";
+import { Spinner, Skeleton, Img } from "../../Loading/";
 import { Logo } from "../../Layout/Assets/Logo";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { NullPlaceHolder } from "../../Chat/Components/RoomChatHelpers";
@@ -63,18 +63,18 @@ export const Table = (props: any) => {
       className="bg-accent border border-base-300/60 rounded-2xl w-full px-4 py-4 sm:px-6 sm:py-5 flex flex-col gap-3"
     >
       <div className="flex items-center justify-between text-xs text-neutral/60">
-        <div className="h-3 w-20 rounded-full bg-base-300/60 animate-pulse" />
-        <div className="h-4 w-12 rounded-full bg-base-300/60 animate-pulse" />
+        <Skeleton className="h-3 w-20 rounded-full" />
+        <Skeleton className="h-4 w-12 rounded-full" />
       </div>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="h-10 w-10 rounded-xl bg-base-300/60 animate-pulse" />
-          <div className="h-4 w-24 rounded-full bg-base-300/60 animate-pulse" />
+          <Skeleton className="h-10 w-10 rounded-xl" />
+          <Skeleton className="h-4 w-24 rounded-full" />
         </div>
-        <div className="h-7 w-20 rounded-full bg-base-300/60 animate-pulse" />
+        <Skeleton className="h-7 w-20 rounded-full" />
         <div className="flex items-center gap-2 min-w-0 justify-end">
-          <div className="h-10 w-10 rounded-xl bg-base-300/60 animate-pulse" />
-          <div className="h-4 w-24 rounded-full bg-base-300/60 animate-pulse" />
+          <Skeleton className="h-10 w-10 rounded-xl" />
+          <Skeleton className="h-4 w-24 rounded-full" />
         </div>
       </div>
     </div>
@@ -103,7 +103,7 @@ export const Table = (props: any) => {
   }, [props.props.props]);
 
   return history.length > 0 || loading === true ? (
-    <div className="w-full h-full flex-1 overflow-auto pb-6">
+    <div className="w-full h-full pb-6">
       <div className="hidden md:flex items-center justify-between px-2 sm:px-4 pb-2 text-xs text-neutral/60">
         <span className="w-32">Date</span>
         <span className="flex-1 text-center">Players</span>
@@ -118,8 +118,8 @@ export const Table = (props: any) => {
         }
         dataLength={history.length}
         next={fetchData}
-        className="overflow-auto pb-4 space-y-3 px-2 sm:px-4"
-        scrollableTarget="scrollTarget"
+        className="pb-4 space-y-3 px-2 sm:px-4"
+        scrollableTarget={props.scrollableTarget ?? "scrollTarget"}
         endMessage={
           <span className="flex justify-center items-center p-6 text-neutral font-montserrat">
             No more history
@@ -151,8 +151,8 @@ export const Table = (props: any) => {
                   <div className="flex items-center gap-2 min-w-0 flex-1">
                     {x?.match?.Player1?.username ? (
                       <>
-                        <Link to={`/Profile/${x.match.Player1.id}`} className="shrink-0">
-                          <img
+                        <Link to={`/profile/${x.match.Player1.id}`} className="shrink-0">
+                          <Img
                             className="rounded-xl h-10 w-10 sm:h-11 sm:w-11 transition-transform duration-200 hover:scale-110"
                             src={x.match.Player1.avatar.medium}
                             alt="Avatar"
@@ -163,7 +163,7 @@ export const Table = (props: any) => {
                         </span>
                       </>
                     ) : (
-                      <Loading props={"sm"} />
+                      <Spinner size="sm" />
                     )}
                   </div>
 
@@ -184,8 +184,8 @@ export const Table = (props: any) => {
                         <span className="text-sm font-poppins font-medium text-neutral truncate max-w-[110px] sm:max-w-[140px]">
                           {x.match.Player2.username}
                         </span>
-                        <Link to={`/Profile/${x.match.Player2.id}`} className="shrink-0">
-                          <img
+                        <Link to={`/profile/${x.match.Player2.id}`} className="shrink-0">
+                          <Img
                             className="rounded-xl h-10 w-10 sm:h-11 sm:w-11 transition-transform duration-200 hover:scale-110"
                             src={x.match.Player2.avatar.medium}
                             alt="Avatar"
@@ -193,7 +193,7 @@ export const Table = (props: any) => {
                         </Link>
                       </>
                     ) : (
-                      <Loading props={"lg"} />
+                      <Spinner size="lg" />
                     )}
                   </div>
                 </div>

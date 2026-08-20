@@ -25,6 +25,7 @@ import { useSocketStore } from "../Services/SocketsServices";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useInView } from "react-intersection-observer";
+import { Spinner, Skeleton, Dots, Img } from "../../Loading";
 
 export const RecentConversations = () => {
   const [isLoading, setLoading] = useState(false);
@@ -100,7 +101,7 @@ export const RecentConversations = () => {
     <div className="h-full flex flex-col ">
       <OnlineNowUsers />
       {ChatRoomsState.recentDms.length > 0 ? (
-        <div className="flex-grow overflow-y-auto no-scrollbar bg-[#1A1C26]">
+        <div className="flex-grow overflow-y-auto no-scrollbar bg-accent">
           {ChatRoomsState.recentDms.map((friend, index) => (
             <div
               key={friend.id}
@@ -125,9 +126,7 @@ export const RecentConversations = () => {
               ref={ref}
               className="flex justify-center items-center h-2 py-5"
             >
-              <span className="text-xs font-light font-poppins text-gray-400">
-                Loading...
-              </span>
+              <Dots size="sm" className="text-gray-400" />
             </div>
           )}
           {EndOfFetching && (
@@ -155,7 +154,7 @@ export const RecentConversations = () => {
         <>
           {isLoading === true ? (
             <div className="text-center">
-              <span className="loading loading-spinner loading-lg "></span>
+              <Spinner size="lg" className="text-primary" />
             </div>
           ) : (
             <NullPlaceHolder message="No Conversation Yet!, Be The First" />
@@ -198,12 +197,12 @@ export const ChatPlaceHolder = ({
           },
         });
       }}
-      className={`message-container flex   px-4 py-5 transition-colors duration-200 hover:bg-[#272932] items-center  ${
-        selectedChatID === id ? "bg-[#272932]" : "bg-[#1A1C26]"
+      className={`message-container flex   px-4 py-5 transition-colors duration-200 hover:bg-base-300 items-center  ${
+        selectedChatID === id ? "bg-base-300" : "bg-accent"
       }`}
     >
       <div className="user-image flex-shrink-0 mr-2">
-        <img
+        <Img
           className="user-image h-10 w-10 rounded-full transition-transform duration-200 hover:scale-110"
           src={userImage}
           alt={`second's Profile`}
@@ -296,7 +295,7 @@ export const OnlineNowUsers = () => {
 
   return (
     <>
-      <div className="online-now-container    p-5 bg-[#1A1C26]">
+      <div className="online-now-container    p-5 bg-accent">
         <div className="messages-header flex flex-row justify-between pb-2">
           <p className="text-purple-500 font-poppins text-sm md:text-lg font-medium leading-normal ">
             Messages
@@ -323,7 +322,7 @@ export const OnlineNowUsers = () => {
           <button
             onClick={() => changeChatType(ChatType.Chat)}
             className={`${
-              selectedChatType === ChatType.Chat ? "bg-[#272932]" : ""
+              selectedChatType === ChatType.Chat ? "bg-base-300" : ""
             } flex-1 p-2 rounded`}
           >
             <div className=" flex flex-row justify-center ">
@@ -336,7 +335,7 @@ export const OnlineNowUsers = () => {
           <button
             onClick={() => changeChatType(ChatType.Room)}
             className={`${
-              selectedChatType === ChatType.Room ? "bg-[#272932]" : ""
+              selectedChatType === ChatType.Room ? "bg-base-300" : ""
             } flex-1 p-2 rounded  `}
           >
             <div className="flex flex-row justify-center">
@@ -385,7 +384,7 @@ export const OnlineNowUsers = () => {
                                   ?.bio as string,
                               });
                               chatState.selectNewChatID(res?.data?.id);
-                              navigate(`/Dm/${res?.data.id}`);
+                              navigate(`/dm/${res?.data.id}`);
                             } else {
                               toast.error(
                                 "You Can't Send Message To this User For Now, try Again later",
@@ -396,7 +395,7 @@ export const OnlineNowUsers = () => {
                       }}
                     >
                       <div className="relative inline-block">
-                        <img
+                        <Img
                           className="user-image h-11 w-11 rounded-full"
                           src={
                             Users.find((u) => u.id === user)?.avatar.medium ??
@@ -429,23 +428,9 @@ export const OnlineNowUsers = () => {
 
 export const skeleton = () => {
   return (
-    <div className="flex flex-col items-center">
-      <div className="flex animate-pulse">
-        <div className="flex-shrink-0">
-          <span className="w-12 h-12 block bg-gray-200 rounded-full dark:bg-gray-700"></span>
-        </div>
-
-        <div className=" mt-2 w-full">
-          {/* eslint-disable-next-line */}
-          <h3
-            className="h-4 bg-gray-200 rounded-full dark:bg-gray-700"
-            style={{ width: "40%" }}
-          ></h3>
-        </div>
-      </div>
-      <div className="flex animate-pulse">
-        <div className="h-2.5 mt-1.5 bg-gray-200 rounded-full dark:bg-gray-700 w-4  "></div>
-      </div>
+    <div className="flex flex-col items-center gap-1.5">
+      <Skeleton className="w-12 h-12 rounded-full" />
+      <Skeleton className="h-2.5 w-8 rounded-full" />
     </div>
   );
 };

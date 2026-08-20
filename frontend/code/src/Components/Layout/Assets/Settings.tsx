@@ -6,7 +6,7 @@ type SettingsProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 export const Settings = ({ selected, className, ...props }: SettingsProps) => {
   return (
-    <Link to={"Settings"}>
+    <Link to={"settings"}>
       <div
         className={classNames(
           "h-10 w-10 rounded-xl flex justify-center text-center items-center hover:cursor-pointer hover:bg-primary/10 text-base-content/50 transition-all duration-200 hover:scale-110 active:scale-95 hover:rotate-45",

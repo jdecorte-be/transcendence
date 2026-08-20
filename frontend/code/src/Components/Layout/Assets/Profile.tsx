@@ -9,7 +9,7 @@ type ProfileProps = React.HTMLAttributes<HTMLDivElement> & {
 export const Profile = ({ selected, className, ...props }: ProfileProps) => {
   const userStore = useUserStore();
   return (
-    <Link to={`Profile/${userStore?.id}`}>
+    <Link to={`profile/${userStore?.id}`}>
       <div
         className={classNames(
           "h-10 w-10 rounded-xl flex justify-center items-center hover:cursor-pointer text-base-content/50 transition-colors",

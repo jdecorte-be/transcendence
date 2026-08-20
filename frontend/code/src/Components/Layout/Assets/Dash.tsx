@@ -7,7 +7,7 @@ type DashProps = React.HTMLAttributes<HTMLDivElement> & {
 
 export const Dash = ({ selected, className, ...props }: DashProps) => {
   return (
-    <Link to={"Home"}>
+    <Link to={"home"}>
       <div
         className={classNames(
           "h-10 w-10 p-1 rounded-xl flex justify-center items-center hover:cursor-pointer hover:bg-primary/10 text-base-content/50 transition-all duration-200 hover:scale-110 active:scale-95",

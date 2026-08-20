@@ -7,7 +7,7 @@ type MessageProps = React.HTMLAttributes<HTMLDivElement> & {
 
 export const Message = ({ selected, className, ...props }: MessageProps) => {
   return (
-    <Link to={"Chat"}>
+    <Link to={"chat"}>
       <div
         className={classNames(
           "h-10 w-10 rounded-xl flex justify-center items-center hover:cursor-pointer hover:bg-primary/10 text-base-content/50 transition-all duration-200 hover:scale-110 active:scale-95",
