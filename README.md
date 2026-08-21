@@ -1,6 +1,6 @@
 <header>
 <h1 align="center">
-  transcendence
+  <a href="https://github.com/jdecorte-be/transcendence"><img src=".assets/banner.svg" alt="transcendence"></a>
   <br>
 </h1>
 
@@ -174,11 +174,3 @@ Requires a production `.env` with real domains/secrets (see `.env.example` for t
 | WebSocket connection refused            | CORS origin mismatch or backend not ready.          | Check `WS_CORS_ORIGIN` matches the frontend origin, and the backend container is healthy. |
 | Avatar upload fails                     | Missing or invalid Cloudinary credentials.          | Verify `CLD_CLOUD_NAME`, `CLD_API_KEY`, `CLD_API_SECRET` in `.env`.        |
 | Prisma migration errors on startup      | Stale schema or unreachable database.               | Confirm `DATABASE_URL` is correct and the `database` container is running. |
-
-## Roadmap
-
--   [ ] **Tournament Mode**: Bracket-based multi-player tournaments.
--   [ ] **Spectator Mode**: Allow users to watch ongoing matches in real time.
--   [ ] **Match Replays**: Persist and replay past game sessions.
--   [ ] **Mobile-Responsive Game Canvas**: Touch controls for paddle input.
--   [ ] **Customizable Game Rules**: Adjustable paddle speed, ball speed, and win conditions.
