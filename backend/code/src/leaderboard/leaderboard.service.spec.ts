@@ -1,5 +1,6 @@
 import { LeaderBoardService } from './leaderboard.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { buildAvatar } from 'src/profile/dto/profile.dto';
 
 describe('LeaderBoardService', () => {
   let service: LeaderBoardService;
@@ -29,8 +30,22 @@ describe('LeaderBoardService', () => {
     const result = await service.getLeaderBoard(0, 10);
 
     expect(result).toEqual([
-      { userId: 'u1', Username: 'alice', firstName: 'A', lastName: 'L', avatar: null, wins: 5 },
-      { userId: 'u2', Username: 'bob', firstName: 'B', lastName: 'O', avatar: null, wins: 3 },
+      {
+        userId: 'u1',
+        Username: 'alice',
+        firstName: 'A',
+        lastName: 'L',
+        avatar: buildAvatar(null, 'alice'),
+        wins: 5,
+      },
+      {
+        userId: 'u2',
+        Username: 'bob',
+        firstName: 'B',
+        lastName: 'O',
+        avatar: buildAvatar(null, 'bob'),
+        wins: 3,
+      },
     ]);
     expect(prisma.match.groupBy).toHaveBeenCalledWith(
       expect.objectContaining({ skip: 0, take: 10, by: ['winner_id'] }),
