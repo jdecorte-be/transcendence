@@ -1,32 +1,41 @@
-<svg width="1200" height="280" viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg">
+<svg width="1200" height="300" viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0b0f19"/>
-      <stop offset="100%" stop-color="#161b2e"/>
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="55%" stop-color="#121834"/>
+      <stop offset="100%" stop-color="#1a1030"/>
     </linearGradient>
-    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#6366f1"/>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
       <stop offset="100%" stop-color="#22d3ee"/>
     </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="1.5" fill="#ffffff" fill-opacity="0.05"/>
+    </pattern>
   </defs>
 
-  <rect width="1200" height="280" fill="url(#bg)"/>
+  <rect width="1200" height="300" fill="url(#bg)"/>
+  <rect width="1200" height="300" fill="url(#dots)"/>
+  <ellipse cx="600" cy="110" rx="520" ry="180" fill="url(#glow)"/>
 
-  <!-- pong court dashed centerline -->
-  <line x1="600" y1="0" x2="600" y2="280" stroke="#ffffff" stroke-opacity="0.08" stroke-width="4" stroke-dasharray="14 14"/>
-
-  <!-- left paddle -->
-  <rect x="60" y="110" width="14" height="60" rx="4" fill="url(#accent)"/>
-  <!-- right paddle -->
-  <rect x="1126" y="110" width="14" height="60" rx="4" fill="url(#accent)"/>
-  <!-- ball -->
-  <circle cx="600" cy="140" r="8" fill="#ffffff"/>
+  <!-- mini pong court strip -->
+  <line x1="600" y1="46" x2="600" y2="94" stroke="#ffffff" stroke-opacity="0.14" stroke-width="3" stroke-dasharray="8 9"/>
+  <rect x="150" y="55" width="10" height="46" rx="5" fill="url(#accent)"/>
+  <rect x="1040" y="55" width="10" height="46" rx="5" fill="url(#accent)"/>
+  <circle cx="330" cy="78" r="3.5" fill="#ffffff" fill-opacity="0.18"/>
+  <circle cx="400" cy="78" r="4.5" fill="#ffffff" fill-opacity="0.35"/>
+  <circle cx="475" cy="78" r="5.5" fill="#ffffff" fill-opacity="0.65"/>
+  <circle cx="555" cy="78" r="7" fill="#ffffff"/>
 
   <!-- wordmark -->
-  <text x="600" y="150" text-anchor="middle" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#ffffff" letter-spacing="1">
+  <text x="600" y="185" text-anchor="middle" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="68" font-weight="700" fill="#f5f6fa" letter-spacing="0.5">
     transcendence
   </text>
-  <text x="600" y="190" text-anchor="middle" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="20" fill="#9aa4c7">
-    Real-time multiplayer Pong · chat · profiles · 42 &amp; GitHub OAuth
+  <text x="600" y="226" text-anchor="middle" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#98a2c3" letter-spacing="0.5">
+    REAL-TIME MULTIPLAYER PONG &#183; CHAT &#183; PROFILES &#183; 42 &amp; GITHUB OAUTH
   </text>
 </svg>
